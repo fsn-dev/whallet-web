@@ -1,4 +1,4 @@
-# fsn-web-wallet
+# whallet-web
 
 ## Project setup
 ```

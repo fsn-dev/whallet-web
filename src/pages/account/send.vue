@@ -170,7 +170,7 @@ export default {
   mounted () {
     this.urlParams = this.$route.query
     this.assetId = this.urlParams.id
-    this.balance = this.$$.web3.utils.fromWei(this.urlParams.balance, 'ether')
+    this.balance = this.$$.fromWei(this.urlParams.balance, this.urlParams.coinType, this.urlParams.dec)
     this.sendType = this.urlParams.type
     if (this.sendType === '1') {
       let startTime = this.urlParams.StartTime.toString().length < 13 ? Number(this.urlParams.StartTime) * 1000 : Number(this.urlParams.StartTime)
@@ -379,7 +379,7 @@ export default {
       let rawTx = {
         from: this.address,
         to: this.formData.to,
-        value: this.$$.web3.utils.toHex(this.$$.web3.utils.toWei(this.formData.value.toString(), 'ether')),
+        value: this.$$.web3.utils.toHex(this.$$.toWei(this.formData.value.toString(), this.urlParams.coinType, this.urlParams.dec)),
         asset: this.assetId,
       }
       if (startTime) {

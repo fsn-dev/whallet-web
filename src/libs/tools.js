@@ -45,16 +45,21 @@ export default {
     }
     return ''
   },
-  fromWei (balance, coin) {
+  fromWei (balance, coin, dec) {
     if (!balance) return 0
     balance = balance.toString()
-    coin = coin.toUpperCase()
-    let coinInfo = this.getCoinInfo(coin, 'rate')
+    coin = coin ? coin.toUpperCase() : ''
     // console.log(coin)
     // console.log(coinInfo)
-    if (coinInfo && typeof coinInfo.rate !== 'undefined') {
+    let coinInfo = this.getCoinInfo(coin, 'rate')
+    // console.log(coinInfo)
+    if (coin && coinInfo && typeof coinInfo.rate !== 'undefined') {
       let d = Number(coinInfo.rate)
       balance = Number(balance) / Math.pow(10, d)
+      balance = new BigNumber(balance)
+      balance = balance.toFormat().replace(/,/g, '')
+    } else if (dec) {
+      balance = Number(balance) / Math.pow(10, dec)
       balance = new BigNumber(balance)
       balance = balance.toFormat().replace(/,/g, '')
     } else {
@@ -66,15 +71,20 @@ export default {
     }
     return balance
   },
-  toWei (balance, coin) {
+  toWei (balance, coin, dec) {
     if (!balance) return 0
     balance = balance.toString()
     coin = coin.toUpperCase()
     let coinInfo = this.getCoinInfo(coin, 'rate')
-    if (coinInfo && coinInfo.rate) {
+    if (coin && coinInfo && coinInfo.rate) {
       let d = Number(coinInfo.rate)
       balance = Number(balance).toFixed(d)
       balance = Number(balance) * Math.pow(10, d)
+      balance = new BigNumber(balance)
+      balance = balance.toFormat().replace(/,/g, '')
+    } else if (dec) {
+      balance = Number(balance).toFixed(dec)
+      balance = Number(balance) * Math.pow(10, dec)
       balance = new BigNumber(balance)
       balance = balance.toFormat().replace(/,/g, '')
     } else {
@@ -218,5 +228,30 @@ export default {
       }
     }
     return window.URL.createObjectURL(blob)
+  },
+  batchRequest (reqArr) {
+    let data = {msg: '', info: ''}
+    return new Promise((resolve, reject) => {
+      try {
+        const batch = new web3.BatchRequest()
+        let arr = []
+        for (let i = 0, len  = reqArr.length; i < len; i++) {
+          batch.add(web3[reqArr[i].p1][reqArr[i].p2].request(...reqArr[i].p3, (err, res) => {
+            if (err) {
+              arr.push(err)
+            } else {
+              arr.push(res)
+            }
+            if ((i + 1) === reqArr.length) {
+              resolve(arr)
+            }
+          }))
+        }
+        batch.execute()
+      } catch (error) {
+        data = {msg: 'Error', error: error.toString()}
+        reject(data)
+      }
+    })
   }
 }

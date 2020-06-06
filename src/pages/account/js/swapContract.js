@@ -3,12 +3,13 @@ import swapABI from '@/config/swapABI.js'
 export const swapTokenContract = {
   getSwapContract (url) {
     return new Promise(resolve => {
+      const ContractAddress = "0xbd8d4dcdc017ea031a46754b0b74b2de0cd5eb74"
       resolve({
         swapInfo: {
           BlockChain: "Fusion",
           Confirmations: 0,
-          ContractAddress: "0x309f6c1ebff14a7231e7d9ff78a5199b6810d946",
-          DcrmAddress: "0x3CC9072c7ddE719d03594af7915cc2d5B4d053cb",
+          ContractAddress: ContractAddress,
+          DcrmAddress: "0x4B4c806c949B2375a58275178DEf06560b79351A",
           Decimals: 8,
           Description: "cross chain bridge BTC with mBTC",
           MaximumSwap: 100,
@@ -18,7 +19,7 @@ export const swapTokenContract = {
           SwapFeeRate: 0.001,
           Symbol: "mBTC"
         },
-        contract: new this.$$.web3.eth.Contract(swapABI, "0x309f6c1ebff14a7231e7d9ff78a5199b6810d946")
+        contract: new this.$$.web3.eth.Contract(swapABI, ContractAddress)
       })
       // this.$axios.post(url, {
       //   id:0,
@@ -27,11 +28,11 @@ export const swapTokenContract = {
       //   params:[]
       // }).then(res => {
       //   console.log(res)
-      //   let data = res.data.result
-      //   resolve({
-      //     swapInfo: data.DestToken,
-      //     contract: new this.$$.web3.eth.Contract(swapABI, data.DestToken.ContractAddress)
-      //   })
+      //   // let data = res.data.result
+      //   // resolve({
+      //   //   swapInfo: data.DestToken,
+      //   //   contract: new this.$$.web3.eth.Contract(swapABI, data.DestToken.ContractAddress)
+      //   // })
       // })
     })
   }

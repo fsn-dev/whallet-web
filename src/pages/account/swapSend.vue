@@ -116,7 +116,7 @@ export default {
       this.getCrossChain()
     },
     getCrossChain () {
-      let url = 'http://47.92.168.85:12556/rpc'
+      let url = this.$$.swapRPC
       this.getSwapContract(url).then(res => {
         console.log(res)
         this.swapInfo = res.swapInfo

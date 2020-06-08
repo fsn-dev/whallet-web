@@ -255,42 +255,62 @@ export default {
       })
       // this.formData.endTime = val
     },
+    validAddress () {
+      return new Promise(resolve => {
+        if (this.formData.to.indexOf('0x') !== 0) {
+          this.$$.web3.fsn.getAddressByNotation(parseInt(this.formData.to), 'latest').then(res => {
+            // console.log(res)
+            resolve(res)
+          }).catch(err => {
+            resolve('Error')
+          })
+        } else if (!this.$$.web3.utils.isAddress(this.formData.to)) {
+          resolve('Error')
+        } else {
+          resolve(this.formData.to)
+        }
+      })
+    },
     openPwd () {
-      this.formData.startTime = this.formData.timeArr[0]
-      this.formData.endTime = this.formData.timeArr[1]
-      if (!this.$$.web3.utils.isAddress(this.formData.to)) {
-        this.msgWarning(this.$t('warn').w_1)
-        return
-      }
       if (!this.formData.to) {
         this.msgWarning(this.$t('warn').w_2)
         return
       }
+      this.formData.to = this.formData.to.replace(/\s/, '')
       if (!this.formData.value || Number(this.formData.value) === 0) {
         this.msgWarning(this.$t('warn').w_3)
         return
       }
-      if (this.activeName === 'b') {
-        if (this.selectTimeType) {
-          if (!this.formData.startTime || !this.formData.endTime) {
-            this.msgWarning(this.$t('warn').w_4)
-            return
-          }
-        } else {
-          if (!this.formData.month) {
-            this.msgWarning(this.$t('warn').w_5)
-            return
+      this.validAddress().then(address => {
+        console.log(address)
+        if (address === 'Error') {
+          this.msgWarning(this.$t('warn').w_1)
+          return
+        }
+        this.formData.address = address
+        this.formData.startTime = this.formData.timeArr[0]
+        this.formData.endTime = this.formData.timeArr[1]
+        if (this.activeName === 'b') {
+          if (this.selectTimeType) {
+            if (!this.formData.startTime || !this.formData.endTime) {
+              this.msgWarning(this.$t('warn').w_4)
+              return
+            }
+          } else {
+            if (!this.formData.month) {
+              this.msgWarning(this.$t('warn').w_5)
+              return
+            }
           }
         }
-      }
-      if (this.activeName === 'c' && !this.formData.beginTime) {
-        this.msgWarning(this.$t('warn').w_6)
-        return
-      }
-      this.loading.init = true
-      this.formData.to = this.formData.to.replace(/\s/, '')
-      // this.prop.pwd = true
-      this.toSign()
+        if (this.activeName === 'c' && !this.formData.beginTime) {
+          this.msgWarning(this.$t('warn').w_6)
+          return
+        }
+        this.loading.init = true
+        // this.prop.pwd = true
+        this.toSign()
+      })
     },
     toSign (data) {
       if (this.sendType === '0') {
@@ -378,7 +398,7 @@ export default {
       // console.log(this.formData.value)
       let rawTx = {
         from: this.address,
-        to: this.formData.to,
+        to: this.formData.address,
         value: this.$$.web3.utils.toHex(this.$$.toWei(this.formData.value.toString(), this.urlParams.coinType, this.urlParams.dec)),
         asset: this.assetId,
       }
@@ -397,8 +417,6 @@ export default {
         this.maxFee = this.$$.web3.utils.fromWei(this.maxFee.toString(), 'ether')
         res.chainId = this.chainId
         res.from = this.address
-        // res.to = this.formData.to
-        // res.value = rawTx.value
         console.log(res)
         this.dataPage = res
         // this.dataPage.gasLimit = res.gas

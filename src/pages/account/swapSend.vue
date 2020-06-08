@@ -5,7 +5,7 @@
         <li class="item">
           <label class="label">
             {{$t('label').address}}:
-            <span class="font12 color_99 ml-10" style="font-weight:normal;">（{{Number(this.urlParams.sendType) ? 'FSN Address' : 'BTC Address'}}）</span>
+            <span class="font12 color_99 ml-10" style="font-weight:normal;">（{{Number(urlParams.sendType) ? 'FSN Address' : 'BTC Address'}}）</span>
           </label>
           <div class="input-box relative">
             <!-- <el-input type="text" v-model="formData.to" class=""></el-input> -->
@@ -124,6 +124,22 @@ export default {
         this.loading.init = false
       })
     },
+    validAddress () {
+      return new Promise(resolve => {
+        if (this.formData.to.indexOf('0x') !== 0) {
+          this.$$.web3.fsn.getAddressByNotation(parseInt(this.formData.to), 'latest').then(res => {
+            // console.log(res)
+            resolve(res)
+          }).catch(err => {
+            resolve('Error')
+          })
+        } else if (!this.$$.web3.utils.isAddress(this.formData.to)) {
+          resolve('Error')
+        } else {
+          resolve(this.formData.to)
+        }
+      })
+    },
     openPwd () {
       if (!this.formData.to) {
         this.msgWarning(this.$t('warn').w_2)
@@ -148,7 +164,20 @@ export default {
       this.loading.init = true
       this.formData.to = this.formData.to.replace(/\s/, '')
       // this.prop.pwd = true
-      this.toSign()
+      if (Number(this.urlParams.sendType)) {
+        this.validAddress().then(address => {
+          console.log(address)
+          if (address === 'Error') {
+            this.msgWarning(this.$t('warn').w_1)
+            return
+          }
+          this.formData.address = address
+          this.toSign()
+        })
+      } else {
+        this.formData.address = this.formData.to
+        this.toSign()
+      }
     },
     toSign () {
       let data = {
@@ -210,9 +239,9 @@ export default {
         let value = this.$$.toWei(this.formData.value, this.urlParams.coinType)
         // let value = this.formData.value
         if (Number(this.urlParams.sendType) === 0) {
-          this.dataPage.input = this.TokenContract.methods.Swapout(value, this.formData.to).encodeABI()
+          this.dataPage.input = this.TokenContract.methods.Swapout(value, this.formData.address).encodeABI()
         } else {
-          this.dataPage.input = this.TokenContract.methods.transfer(this.formData.to, value).encodeABI()
+          this.dataPage.input = this.TokenContract.methods.transfer(this.formData.address, value).encodeABI()
         }
         this.maxFee = this.$$.web3.utils.hexToNumber(this.dataPage.gasPrice) * this.$$.web3.utils.hexToNumber(this.dataPage.gas)
         this.maxFee = this.$$.web3.utils.fromWei(this.maxFee.toString(), 'ether')

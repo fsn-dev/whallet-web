@@ -184,6 +184,8 @@ export default {
     return imgInfo
   },
   qrCode (cont, id) {
+    // console.log(id)
+    // console.log(document.getElementById(id))
     document.getElementById(id).innerHTML = ''
     let qrcodeInit = new QRCode(id, {
       width: 200,

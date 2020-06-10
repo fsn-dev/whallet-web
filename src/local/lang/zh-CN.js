@@ -32,6 +32,7 @@ export default {
 		copy: '复制',
 		send: '发送',
 		withdrawal: '提现',
+		deposit: '充值',
 		newAdd: '新增地址',
 		createWt: '创建钱包',
 		importWt: '导入钱包',
@@ -84,6 +85,19 @@ export default {
 		custom: '自定义'
 	},
 	state: {
+		name: '状态',
+		on: '在线',
+		off: '离线',
+		success: '成功',
+		fail: '失败',
+		pending: '等待中',
+		null: '无',
+		new: '新',
+		end: '结束',
+		depositing: '充值中',
+		confirming: '确认中',
+		swapping: '交换中',
+		timeout: '超时'
 	},
 	action: {
 	},

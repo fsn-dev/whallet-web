@@ -117,7 +117,7 @@ export default {
     },
     getCrossChain () {
       let url = this.$$.swapRPC
-      this.getSwapContract(url).then(res => {
+      this.getSwapContractAPI(url).then(res => {
         console.log(res)
         this.swapInfo = res.swapInfo
         this.TokenContract = res.contract

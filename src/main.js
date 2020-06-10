@@ -45,6 +45,7 @@ import {
   TimePicker,
   Popover,
   Tooltip,
+  Notification 
 } from 'element-ui'
 Vue.use(Button)
 Vue.use(Select)
@@ -71,6 +72,7 @@ Vue.use(Popover)
 Vue.use(Tooltip)
 Vue.prototype.$msgbox = MessageBox
 Vue.prototype.$message = Message
+Vue.prototype.$notify = Notification
 
 Vue.use(Vuex)
 Vue.config.productionTip = 

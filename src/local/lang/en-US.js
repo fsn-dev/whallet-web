@@ -30,7 +30,8 @@ export default {
 		unlock: 'Unlock',
 		copy: 'Copy',
 		send: 'Send',
-		withdrawal: 'Withdrawal',
+		withdrawal: 'Redeem',
+		deposit: 'Mint',
 		newAdd: 'New address',
 		createWt: 'Create Wallet',
 		importWt: 'Import Wallet',
@@ -83,6 +84,19 @@ export default {
 		custom: 'Custom'
 	},
 	state: {
+		name: 'Status',
+		on: 'Online',
+		off: 'Offline',
+		success: 'Success',
+		fail: 'Failure',
+		pending: 'Pending',
+		null: 'Null',
+		new: 'New',
+		end: 'End',
+		depositing: 'Depositing',
+		confirming: 'Confirming',
+		swapping: 'Swapping',
+		timeout: 'Timeout'
 	},
 	action: {
 	},

@@ -212,11 +212,23 @@
     <!-- 充值 view end -->
 
     <!-- 充值信息 start -->
-    <el-dialog :title="$t('btn').deposit" :visible.sync="prop.depositData" width="400px" :before-close="cancel" :close-on-click-modal="true" :modal-append-to-body='false'>
+    <el-dialog :title="$t('btn').deposit" :visible.sync="prop.depositData" width="580px" :before-close="cancel" :close-on-click-modal="true" :modal-append-to-body='false'>
       <div>
         <ul class="deposit-box">
           <li class="item flex-sc">
-            <span class="label WW30">Address:</span>
+            <span class="label WW30">Hash:</span>
+            <div class="value flex-sc WW70">
+              <span>{{btc.mintHash}}</span>
+            </div>
+          </li>
+          <li class="item flex-sc">
+            <span class="label WW30">From:</span>
+            <div class="value flex-sc WW70">
+              <span>{{btc.from}}</span>
+            </div>
+          </li>
+          <li class="item flex-sc">
+            <span class="label WW30">To:</span>
             <div class="value flex-sc WW70">
               <span>{{btc.address}}</span>
             </div>
@@ -224,21 +236,33 @@
           <li class="item flex-sc">
             <span class="label WW30">Value:</span>
             <div class="value flex-sc WW70">
-              <span> {{$$.fromWei(btc.mintValue, 'BTC')}} mBTC </span>
+              <span> {{$$.fromWei(btc.mintValue, 'BTC')}} BTC </span>
             </div>
           </li>
           <li class="item flex-sc">
+            <span class="label WW30">Fee:</span>
+            <div class="value flex-sc WW70">
+              <span> {{$$.fromWei(Number(btc.mintValue) * Number(swapInfo.SwapFeeRate), 'BTC')}} BTC </span>
+            </div>
+          </li>
+          <li class="item flex-sc">
+            <span class="label WW30">Receive:</span>
+            <div class="value flex-sc WW70">
+              <span> {{$$.fromWei(Number(btc.mintValue) * (1 - Number(swapInfo.SwapFeeRate), 'BTC'))}} mBTC </span>
+            </div>
+          </li>
+          <li class="item flex-sc">
+            <span class="label WW30">Receive FSN Address:</span>
+            <div class="value flex-sc WW70">
+              <span> {{address}} </span>
+            </div>
+          </li>
+          <!-- <li class="item flex-sc">
             <span class="label WW30">Status:</span>
             <div class="value flex-sc WW70">
               <span class="color_green"> {{setHistoryState(btc.status).status}} </span>
             </div>
-          </li>
-          <li class="item flex-sc">
-            <span class="label WW30">Hash:</span>
-            <div class="value flex-sc WW70">
-              <span>{{btc.mintHash}}</span>
-            </div>
-          </li>
+          </li> -->
         </ul>
       </div>
     </el-dialog>
@@ -382,7 +406,8 @@ export default {
         mintValue: 0,
         mintTip: false,
         mintHash: '',
-        status: ''
+        status: '',
+        from: ''
       },
     }
   },
@@ -587,11 +612,13 @@ export default {
               // this.btc.mintTip = true
               // this.btc.mintHash = useTxns.txid
               // this.btc.status = txns.result.status
+              // this.btc.from = txns.result.from
               if ([0,5,7,8,9].includes(txns.result.status)) {
                 this.btc.mintValue = txns.result.value
                 this.btc.mintTip = true
                 this.btc.mintHash = useTxns.txid
                 this.btc.status = txns.result.status
+                this.btc.from = txns.result.from
               } else {
                 this.btc.mintTip = false
               }

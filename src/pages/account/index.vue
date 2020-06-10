@@ -582,18 +582,18 @@ export default {
           this.getTxnStatusAPI(this.$$.swapRPC, useTxns.txid).then(txns => {
             console.log(txns)
             if (txns.result) {
-              this.btc.mintValue = txns.result.value
-              this.btc.mintTip = true
-              this.btc.mintHash = useTxns.txid
-              this.btc.status = txns.result.status
-              // if ([0,5,7,8,9].includes(txns.result.status)) {
-              //   this.btc.mintValue = txns.result.value
-              //   this.btc.mintTip = true
-              //   this.btc.mintHash = useTxns.txid
-              //   this.btc.status = txns.result.status
-              // } else {
-              //   this.btc.mintTip = false
-              // }
+              // this.btc.mintValue = txns.result.value
+              // this.btc.mintTip = true
+              // this.btc.mintHash = useTxns.txid
+              // this.btc.status = txns.result.status
+              if ([0,5,7,8,9].includes(txns.result.status)) {
+                this.btc.mintValue = txns.result.value
+                this.btc.mintTip = true
+                this.btc.mintHash = useTxns.txid
+                this.btc.status = txns.result.status
+              } else {
+                this.btc.mintTip = false
+              }
             } else {
               this.btc.mintTip = false
             }

@@ -246,8 +246,8 @@
 
     <div class="deposit-tip-box box_Wshadow1 cursorP" v-if="btc.mintTip" @click="openMintView">
       <div class="flex-sc">
-        <div class="logo flex-c"><img src="@/assets/img/coin/btc.svg"></div>
-        <span class="font14 color_99 txt flex-c">Waiting for deposit</span>
+        <div class="logo flex-c"><img src="@/assets/img/coin/btc-blue.svg"></div>
+        <span class="font14 color_99 txt flex-sc">Waiting for deposit</span>
       </div>
     </div>
   </div>
@@ -256,9 +256,10 @@
 <style lang="scss">
 .deposit-tip-box {
   $depositH: 60;
-  position: absolute; top:size(30);right: size(10); border-radius: size(4);box-shadow:0 0 10px 1px #002247 ;
+  $colorBg: #242FED;
+  position: absolute; top:size(30);right: size(10); border-radius: size(4);box-shadow:0 0 5px 0px $colorBg ;
   .logo {
-    width: size($depositH);height: size($depositH - 10);padding: size(8);background:#002247;border: 1px solid #002247;
+    width: size($depositH);height: size($depositH - 10);padding: size(8);//border-right: 1px solid $colorBg;//background:$colorBg;
     img {
       height: 100%;
     }

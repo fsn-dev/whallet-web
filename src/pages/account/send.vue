@@ -444,6 +444,10 @@ export default {
         } else {
           console.log(hash)
           this.msgSuccess(this.$t('success').s_4 + 'Hash:' + hash)
+          // this.$$.web3.eth.getTransactionReceipt(hash, (err, res) => {
+          //   console.log(err)
+          //   console.log(res)
+          // })
         }
         this.prop.confirm = false
         this.toUrl('/account')

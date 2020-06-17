@@ -1,5 +1,6 @@
 'use strict';
-var ethUtil = require('ethereumjs-util')
+// var ethUtil = require('ethereumjs-util')
+var ethUtil = require('../ethUtil')
 ethUtil.crypto = require("crypto");
 ethUtil.Tx = require("ethereumjs-tx");
 ethUtil.scrypt = require("scryptsy");

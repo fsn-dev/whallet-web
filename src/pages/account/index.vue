@@ -422,6 +422,10 @@ export default {
   mounted () {
     this.activeName = this.$route.query.activeTab ? this.$route.query.activeTab : 'assets'
     this.init()
+    // this.$$.web3.eth.subscribe('pendingTransactions', (err, res) => {
+    //   console.log(err)
+    //   console.log(res)
+    // })
     // console.log(this.$$.swapRPC)
   },
   methods: {

@@ -1,15 +1,17 @@
 import walletCreate from '../public/walletCreate.js'
 
-const ethUtil = require('ethereumjs-util')
-ethUtil.Tx  = require("ethereumjs-tx")
+// const ethUtil = require('ethereumjs-util')
+const Tx  = require("ethereumjs-tx")
 const Ledger3 = require("./ledger3")
 const LedgerEth = require("./ledger-eth")
 const ledger = new Ledger3("w0w")
 const app = new LedgerEth(ledger)
-
+const rlp = require('rlp')
 function getAddressArr (HDPath, page) {
   return new Promise(resolve => {
     let data = { msg: 'Error', info: []}
+    console.log(HDPath)
+    console.log(page)
     app.getAddress(HDPath, (res, err) => {
       let addressArr = []
       if (err) {
@@ -30,7 +32,7 @@ function signTxLedger (app, eTx, rawTx, HDPath, old) {
     eTx.raw[6] = rawTx.chainId
     eTx.raw[7] = eTx.raw[8] = 0
     let toHash = old ? eTx.raw.slice(0, 6) : eTx.raw
-    let txToSign = ethUtil.rlp.encode(toHash)
+    let txToSign = rlp.encode(toHash)
     app.signTransaction(HDPath, txToSign.toString('hex'), (result, error) => {
       // console.log(result)
       // console.log(error)
@@ -52,7 +54,7 @@ function signTxLedger (app, eTx, rawTx, HDPath, old) {
         rawTx.v = "0x" + v;
         rawTx.r = "0x" + result['r'];
         rawTx.s = "0x" + result['s'];
-        eTx = new ethUtil.Tx(rawTx);
+        eTx = new Tx(rawTx);
         // rawTx.rawTx = JSON.stringify(rawTx);
         rawTx.signedTx = '0x' + eTx.serialize().toString('hex');
         rawTx.isError = false
@@ -65,7 +67,7 @@ function signTxLedger (app, eTx, rawTx, HDPath, old) {
 
 function toSign (HDPath, rawTx) {
   return new Promise(resolve => {
-    let eTx = new ethUtil.Tx(rawTx)
+    let eTx = new Tx(rawTx)
     let EIP155Supported = false
     app.getAppConfiguration((result, error) => {
       // console.log(result)

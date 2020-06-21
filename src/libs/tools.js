@@ -15,6 +15,8 @@ import web3 from '@/assets/js/web3/index.js'
 
 import {BigNumber} from 'bignumber.js'
 
+let BN = web3.utils.BN
+
 export default {
   fromTime (timestamp) {
     if (timestamp.toString().length === 10) {
@@ -49,7 +51,6 @@ export default {
     if (!balance) return 0
     balance = balance.toString()
     coin = coin ? coin.toUpperCase() : ''
-    // console.log(coin)
     // console.log(coinInfo)
     let coinInfo = this.getCoinInfo(coin, 'rate')
     // console.log(coinInfo)
@@ -73,18 +74,22 @@ export default {
   },
   toWei (balance, coin, dec) {
     if (!balance) return 0
-    balance = balance.toString()
+    // balance = balance.toString()
     coin = coin.toUpperCase()
     let coinInfo = this.getCoinInfo(coin, 'rate')
     if (coin && coinInfo && coinInfo.rate) {
       let d = Number(coinInfo.rate)
-      balance = Number(balance).toFixed(d)
+      let decMin = Math.min(d, 16)
+      balance = Number(balance).toFixed(decMin)
       balance = Number(balance) * Math.pow(10, d)
+      balance = Number(balance).toFixed(0)
       balance = new BigNumber(balance)
       balance = balance.toFormat().replace(/,/g, '')
     } else if (dec) {
-      balance = Number(balance).toFixed(dec)
+      let decMin = Math.min(dec, 16)
+      balance = Number(balance).toFixed(decMin)
       balance = Number(balance) * Math.pow(10, dec)
+      balance = Number(balance).toFixed(0)
       balance = new BigNumber(balance)
       balance = balance.toFormat().replace(/,/g, '')
     } else {
@@ -94,7 +99,7 @@ export default {
         balance = web3.utils.toWei(balance, 'ether')
       }
     }
-    balance = Number(balance).toFixed(0)
+    balance = new BN(balance).toString()
     return balance
   },
   thousandBit (num, dec = 2) {

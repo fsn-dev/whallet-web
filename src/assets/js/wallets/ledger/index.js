@@ -10,8 +10,6 @@ const rlp = require('rlp')
 function getAddressArr (HDPath, page) {
   return new Promise(resolve => {
     let data = { msg: 'Error', info: []}
-    console.log(HDPath)
-    console.log(page)
     app.getAddress(HDPath, (res, err) => {
       let addressArr = []
       if (err) {

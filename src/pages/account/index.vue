@@ -426,7 +426,7 @@ export default {
     //   console.log(err)
     //   console.log(res)
     // })
-    // console.log(this.$$.swapRPC)
+    // console.log(this.$$.web3)
   },
   methods: {
     ...swapTokenContract,
@@ -581,6 +581,7 @@ export default {
         if (err) {
           console.log('balanceOf:', err)
         } else {
+          console.log(res)
           this.mBTCBalance = res
           this.swapTable = [
             {

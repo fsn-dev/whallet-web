@@ -299,7 +299,7 @@ export default {
           this.fileData,
           this.password
         )
-        console.log(this.walletInfo.getPrivateKeyString())
+        // console.log(this.walletInfo.getPrivateKeyString())
         this.$store.commit("setKeystore", this.fileData)
         this.unlockWallet(this.walletInfo.getChecksumAddressString())
       } catch (e) {

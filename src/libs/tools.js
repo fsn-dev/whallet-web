@@ -15,7 +15,6 @@ import web3 from '@/assets/js/web3/index.js'
 
 import {BigNumber} from 'bignumber.js'
 
-let BN = web3.utils.BN
 
 export default {
   fromTime (timestamp) {
@@ -119,7 +118,6 @@ export default {
         balance = web3.utils.toWei(balance, 'ether')
       }
     }
-    balance = new BN(balance).toString()
     return balance
   },
   thousandBit (num, dec = 2) {

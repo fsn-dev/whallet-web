@@ -581,7 +581,7 @@ export default {
         if (err) {
           console.log('balanceOf:', err)
         } else {
-          console.log(res)
+          // console.log(res)
           this.mBTCBalance = res
           this.swapTable = [
             {

@@ -13,11 +13,11 @@
         </li>
         <li class="item">
           <label class="label">{{$t('label').value}}:</label>
-          <div class="input-box">
+          <div class="input-box" v-if="refresh.value">
             <!-- <el-input type="number" v-model="formData.value" class=""></el-input> -->
             <input type="number" v-model="formData.value" class="input-text H40 WW100 plr10">
           </div>
-          <span class="flex-sc font12 color_99">{{$t('label').balance}}：{{balance}}</span>
+          <span class="flex-sc font12 color_99 cursorP" @click="inputBalance">{{$t('label').balance}}：{{balance}}</span>
         </li>
         <li class="item">
           <label class="label">{{$t('label').timelock}}:</label>
@@ -156,6 +156,7 @@ export default {
       signTx: '',
       refresh: {
         beginTime: true,
+        value: true
       }
     }
   },
@@ -222,6 +223,14 @@ export default {
     this.loading.init = false
   },
   methods: {
+    inputBalance () {
+      this.formData.value = this.balance
+      // console.log(123)
+      this.refresh.value = false
+      this.$nextTick(() => {
+        this.refresh.value = true
+      })
+    },
     onTabClick () {
       if (this.isToAsset && this.activeName === 'a' && this.sendType === '1') {
         this.formData.to = this.address
@@ -395,7 +404,7 @@ export default {
       this.buildTxnsAndSign('buildTimeLockToAssetTx', startTime, endTime)
     },
     buildTxnsAndSign (param, startTime, endTime) {
-      // console.log(this.formData.value)
+      console.log(this.$$.toWei(this.formData.value.toString(), this.urlParams.coinType, this.urlParams.dec))
       let rawTx = {
         from: this.address,
         to: this.formData.address,

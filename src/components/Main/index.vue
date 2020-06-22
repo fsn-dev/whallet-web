@@ -144,7 +144,9 @@ export default {
     }
   },
   mounted () {
-    this.setNetWork()
+    // this.setNetWork()
+    
+    this.changNetwork()
     this.newsView(this.$route)
   },
   methods: {

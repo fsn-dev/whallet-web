@@ -79,16 +79,25 @@ export default {
     let coinInfo = this.getCoinInfo(coin, 'rate')
     if (coin && coinInfo && coinInfo.rate) {
       let d = Number(coinInfo.rate)
-      let decMin = Math.min(d, 16)
-      balance = Number(balance).toFixed(decMin)
+      // let decMin = Math.min(d, 16)
+      if (d > 16) {
+        d = d - 2
+        balance *= 100
+      }
+      balance = Number(balance).toFixed(d)
       balance = Number(balance) * Math.pow(10, d)
       balance = Number(balance).toFixed(0)
       balance = new BigNumber(balance)
       balance = balance.toFormat().replace(/,/g, '')
     } else if (dec) {
-      let decMin = Math.min(dec, 16)
-      balance = Number(balance).toFixed(decMin)
-      balance = Number(balance) * Math.pow(10, dec)
+      // let decMin = Math.min(dec, 16)
+      let d = dec
+      if (d > 16) {
+        d = d - 2
+        balance *= 100
+      }
+      balance = Number(balance).toFixed(d)
+      balance = Number(balance) * Math.pow(10, d)
       balance = Number(balance).toFixed(0)
       balance = new BigNumber(balance)
       balance = balance.toFormat().replace(/,/g, '')

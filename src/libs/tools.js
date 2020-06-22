@@ -54,15 +54,25 @@ export default {
     // console.log(coinInfo)
     let coinInfo = this.getCoinInfo(coin, 'rate')
     // console.log(coinInfo)
-    if (coin && coinInfo && typeof coinInfo.rate !== 'undefined') {
-      let d = Number(coinInfo.rate)
-      balance = Number(balance) / Math.pow(10, d)
-      balance = new BigNumber(balance)
-      balance = balance.toFormat().replace(/,/g, '')
-    } else if (dec) {
-      balance = Number(balance) / Math.pow(10, dec)
-      balance = new BigNumber(balance)
-      balance = balance.toFormat().replace(/,/g, '')
+    if (dec || (coin && coinInfo && typeof coinInfo.rate !== 'undefined')) {
+      let d = dec ? Number(dec) : Number(coinInfo.rate)
+      if (d === 15) {
+        balance = web3.utils.fromWei(balance, 'milli')
+      } else if (d === 18) {
+        balance = web3.utils.fromWei(balance, 'ether')
+      } else if (d === 21) {
+        balance = web3.utils.fromWei(balance, 'grand')
+      } else if (d === 24) {
+        balance = web3.utils.fromWei(balance, 'mether')
+      } else if (d === 27) {
+        balance = web3.utils.fromWei(balance, 'gether')
+      } else if (d === 30) {
+        balance = web3.utils.fromWei(balance, 'tether')
+      } else {
+        balance = Number(balance) / Math.pow(10, d)
+        balance = new BigNumber(balance)
+        balance = balance.toFormat().replace(/,/g, '')
+      }
     } else {
       if (coin === 'GWEI') {
         balance = web3.utils.fromWei(balance, 'gwei')
@@ -77,30 +87,31 @@ export default {
     // balance = balance.toString()
     coin = coin.toUpperCase()
     let coinInfo = this.getCoinInfo(coin, 'rate')
-    if (coin && coinInfo && coinInfo.rate) {
-      let d = Number(coinInfo.rate)
-      // let decMin = Math.min(d, 16)
-      if (d > 16) {
-        d = d - 2
-        balance *= 100
+    if (dec || (coin && coinInfo && typeof coinInfo.rate !== 'undefined')) {
+      let d = dec ? Number(dec) : Number(coinInfo.rate)
+      if (d === 15) {
+        balance = web3.utils.toWei(balance, 'milli')
+      } else if (d === 18) {
+        balance = web3.utils.toWei(balance, 'ether')
+      } else if (d === 21) {
+        balance = web3.utils.toWei(balance, 'grand')
+      } else if (d === 24) {
+        balance = web3.utils.toWei(balance, 'mether')
+      } else if (d === 27) {
+        balance = web3.utils.toWei(balance, 'gether')
+      } else if (d === 30) {
+        balance = web3.utils.toWei(balance, 'tether')
+      } else {
+        if (d > 16) {
+          d = d - 2
+          balance *= 100
+        }
+        balance = Number(balance).toFixed(d)
+        balance = Number(balance) * Math.pow(10, d)
+        balance = Number(balance).toFixed(0)
+        balance = new BigNumber(balance)
+        balance = balance.toFormat().replace(/,/g, '')
       }
-      balance = Number(balance).toFixed(d)
-      balance = Number(balance) * Math.pow(10, d)
-      balance = Number(balance).toFixed(0)
-      balance = new BigNumber(balance)
-      balance = balance.toFormat().replace(/,/g, '')
-    } else if (dec) {
-      // let decMin = Math.min(dec, 16)
-      let d = dec
-      if (d > 16) {
-        d = d - 2
-        balance *= 100
-      }
-      balance = Number(balance).toFixed(d)
-      balance = Number(balance) * Math.pow(10, d)
-      balance = Number(balance).toFixed(0)
-      balance = new BigNumber(balance)
-      balance = balance.toFormat().replace(/,/g, '')
     } else {
       if (coin === 'GWEI') {
         balance = web3.utils.toWei(balance, 'gwei')

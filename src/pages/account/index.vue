@@ -80,7 +80,14 @@
                 <el-table-column label="Start" align="center">
                   <template slot-scope="scope">
                     {{
-                      scope.row.StartTime.toString().length > 13 ? 'Forever' : $$.timeChange({date: scope.row.StartTime, type: 'yyyy-mm-dd', format: '-'})
+                      scope.row.StartTime.toString().length > 13 ?
+                        'Forever'
+                        : (
+                          Date.parse('2019-06-30') > (Number(scope.row.StartTime) * 1000) ? 
+                            'Now'
+                            :
+                            $$.timeChange({date: scope.row.StartTime, type: 'yyyy-mm-dd', format: '-'})
+                        )
                     }}
                   </template>
                 </el-table-column>

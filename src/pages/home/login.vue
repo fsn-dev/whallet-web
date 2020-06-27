@@ -87,6 +87,10 @@
         <el-button type="primary" size="small" @click="selectAddress">{{$t('btn').confirm}}</el-button>
       </span>
     </el-dialog>
+    <!-- <div>
+      <el-input v-model="test"></el-input>
+      {{$$.toWei(test, 'FSN')}}
+    </div> -->
   </div>
 </template>
 
@@ -136,6 +140,7 @@ export default {
   name: 'login',
   data () {
     return {
+      // test: '',
       activeTabs: 'ledger',
       loading: {
         init: false

@@ -53,8 +53,8 @@ export default {
     // console.log(coinInfo)
     let coinInfo = this.getCoinInfo(coin, 'rate')
     // console.log(coinInfo)
-    if (dec || (coin && coinInfo && typeof coinInfo.rate !== 'undefined')) {
-      let d = dec ? Number(dec) : Number(coinInfo.rate)
+    if (dec || dec === 0 || (coin && coinInfo && typeof coinInfo.rate !== 'undefined')) {
+      let d = dec || dec === 0 ? Number(dec) : Number(coinInfo.rate)
       if (d === 15) {
         balance = web3.utils.fromWei(balance, 'milli')
       } else if (d === 18) {
@@ -86,8 +86,8 @@ export default {
     // balance = balance.toString()
     coin = coin.toUpperCase()
     let coinInfo = this.getCoinInfo(coin, 'rate')
-    if (dec || (coin && coinInfo && typeof coinInfo.rate !== 'undefined')) {
-      let d = dec ? Number(dec) : Number(coinInfo.rate)
+    if (dec || dec === 0 || (coin && coinInfo && typeof coinInfo.rate !== 'undefined')) {
+      let d = dec || dec === 0 ? Number(dec) : Number(coinInfo.rate)
       if (d === 15) {
         balance = web3.utils.toWei(balance, 'milli')
       } else if (d === 18) {
@@ -118,6 +118,7 @@ export default {
         balance = web3.utils.toWei(balance, 'ether')
       }
     }
+    // console.log(balance)
     return balance
   },
   thousandBit (num, dec = 2) {

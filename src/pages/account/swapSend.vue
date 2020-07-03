@@ -5,7 +5,7 @@
         <li class="item">
           <label class="label">
             {{$t('label').address}}:
-            <span class="font12 color_99 ml-10" style="font-weight:normal;">（{{Number(urlParams.sendType) ? 'FSN Address' : 'BTC Address'}}）</span>
+            <span class="font12 color_99 ml-10" style="font-weight:normal;">（{{!Number(urlParams.sendType) ? ((urlParams.coinType ? urlParams.coinType.replace('m', '') : urlParams.coinType) + ' Address') : 'FSN Address'}}）</span>
           </label>
           <div class="input-box relative">
             <!-- <el-input type="text" v-model="formData.to" class=""></el-input> -->
@@ -112,17 +112,24 @@ export default {
     },
     init () {
       this.urlParams = this.$route.query
-      this.balance = this.$$.fromWei(this.urlParams.balance, this.urlParams.coinType)
+      console.log(this.urlParams)
+      this.balance = this.$$.fromWei(this.urlParams.balance, this.urlParams.coinType.replace('m', ''))
       this.getCrossChain()
     },
     getCrossChain () {
-      let url = this.$$.swapRPC
-      this.getSwapContractAPI(url).then(res => {
-        console.log(res)
-        this.swapInfo = res.swapInfo
-        this.TokenContract = res.contract
+      this.getSwapInfo().then(res => {
+        this.swapInfo = res[this.urlParams.coinType].swapInfo
+        this.TokenContract = res[this.urlParams.coinType].contract
+        console.log(this.TokenContract)
         this.loading.init = false
       })
+      // let url = this.$$.swapRPC
+      // this.getSwapContractAPI(url).then(res => {
+      //   console.log(res)
+      //   this.swapInfo = res.swapInfo
+      //   this.TokenContract = res.contract
+      //   this.loading.init = false
+      // })
     },
     validAddress () {
       return new Promise(resolve => {
@@ -236,10 +243,15 @@ export default {
     },
     getInputData () {
       try {
-        let value = this.$$.toWei(this.formData.value, this.urlParams.coinType)
+        let value = this.$$.toWei(this.formData.value, this.urlParams.coinType.replace('m', ''))
         // let value = this.formData.value
         if (Number(this.urlParams.sendType) === 0) {
-          this.dataPage.input = this.TokenContract.methods.Swapout(value, this.formData.address).encodeABI()
+          // console.log(this.urlParams.coinType)
+          if (this.urlParams.coinType === 'mBTC') {
+            this.dataPage.input = this.TokenContract.methods.Swapout(value, this.formData.address).encodeABI()
+          } else {
+            this.dataPage.input = this.TokenContract.methods.Swapout(value).encodeABI()
+          }
         } else {
           this.dataPage.input = this.TokenContract.methods.transfer(this.formData.address, value).encodeABI()
         }

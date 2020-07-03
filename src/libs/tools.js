@@ -18,7 +18,7 @@ import {BigNumber} from 'bignumber.js'
 
 export default {
   fromTime (timestamp) {
-    if (timestamp.toString().length === 10) {
+    if (timestamp.toString().length >=10 && timestamp.toString().length < 13) {
       timestamp = Number(timestamp) * 1000
     } else if (timestamp.toString().length > 13) {
       timestamp = timestamp.toString().substring(0, 13)

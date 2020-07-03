@@ -124,7 +124,7 @@ export default{
     "token": "tokentx",
     "hashFM": "",
     "limit": 0,
-    "rate": 8,
+    "rate": 6,
     "isCase": 0,
     "dollarURL": "https://api.coinmarketcap.com/v1/ticker/tether/"
   },

@@ -1,42 +1,78 @@
 import swapABI from '@/config/swapABI.js'
+import swapETHABI from '@/config/swapETHABI.js'
 
 export const swapTokenContract = {
-  getSwapContractAPI (url) {
+  getSwapCoinInfo () {
+    return [
+      {coinType: 'mBTC', url: 'https://testnet.smpcwallet.com/btc2fsn'},
+      {coinType: 'mETH', url: 'https://testnet.smpcwallet.com/eth2fsn'},
+      {coinType: 'mUSDT', url: 'https://testnet.smpcwallet.com/usdt2fsn'},
+    ]
+  },
+  getSwapContractAPI (url, coin) {
+    let address = this.$store.state.address
     return new Promise(resolve => {
-      // const ContractAddress = "0xbd8d4dcdc017ea031a46754b0b74b2de0cd5eb74"
-      // resolve({
-      //   swapInfo: {
-      //     BlockChain: "Fusion",
-      //     Confirmations: 0,
-      //     ContractAddress: ContractAddress,
-      //     DcrmAddress: "0x4B4c806c949B2375a58275178DEf06560b79351A",
-      //     Decimals: 8,
-      //     Description: "cross chain bridge BTC with mBTC",
-      //     MaximumSwap: 100,
-      //     MinimumSwap: 0.00001,
-      //     Name: "SMPC Bitcoin",
-      //     NetID: "Testnet",
-      //     SwapFeeRate: 0.001,
-      //     Symbol: "mBTC"
-      //   },
-      //   contract: new this.$$.web3.eth.Contract(swapABI, ContractAddress)
-      // })
       this.$axios.post(url, {
         id:0,
         jsonrpc:"2.0",
         method:"swap.GetServerInfo",
         params:[]
       }).then(res => {
-        // console.log(res)
         let data = res.data.result
-        resolve({
-          swapInfo: data.DestToken,
-          contract: new this.$$.web3.eth.Contract(swapABI, data.DestToken.ContractAddress)
+        let ABI = coin === 'mBTC' ? swapABI : swapETHABI
+        let contract = new this.$$.web3.eth.Contract(ABI, data.DestToken.ContractAddress)
+        contract.methods.balanceOf(address).call({from: address}, (err, res) => {
+          let balance = 0
+          if (!err) {
+            balance = res
+          }
+          resolve({
+            id: data.DestToken.ContractAddress,
+            coinType: coin,
+            balance: balance,
+            swapInfo: data.DestToken,
+            contract: contract
+          })
         })
       }).catch(err => {
         console.log(err)
-        resolve(err)
+        resolve({
+          id: '',
+          coinType: coin,
+          balance: 0,
+          swapInfo: {},
+          contract: {}
+        })
       })
+    })
+  },
+  getAllSwapContract () {
+    let arr = [], coinList = this.getSwapCoinInfo()
+    for (let obj of coinList) {
+      arr.push(this.getSwapContractAPI(obj.url, obj.coinType))
+    }
+    return new Promise(resolve => {
+      Promise.all(arr).then(res => {
+        let coinObj = {}
+        for (let i = 0, len = coinList.length; i < len; i++) {
+          let obj = coinList[i]
+          coinObj[obj.coinType] = res[i]
+        }
+        resolve(coinObj)
+        // resolve(res)
+      })
+    })
+  },
+  getSwapInfo () {
+    return new Promise(resolve => {
+      if (this.$store.state.swapCoin.length > 0) {
+        resolve(this.$store.state.swapCoin)
+      } else {
+        this.getAllSwapContract().then(res  => {
+          this.$store.commit('setSwapCoin', res)
+          resolve(res)
+        })
+      }
     })
   },
   registerAddress (url, address) {

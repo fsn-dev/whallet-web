@@ -119,9 +119,9 @@
                   <div class="flex-sc">
                     <div class="coin-logo">
                       <!-- {{$$.getCoinInfo(scope.row.coinType).logo}} -->
-                      <img :src="getCoinInfo(scope.row.coinType).logo">
+                      <img :src="getCoinInfo(scope.row.coinType.replace('m', '')).logo">
                     </div>
-                    <span>{{scope.row.coinType === 'BTC' ? 'mBTC' : scope.row.coinType}}</span>
+                    <span>{{scope.row.coinType}}</span>
                   </div>
                 </template>
               </el-table-column>
@@ -132,14 +132,14 @@
               </el-table-column>
               <el-table-column :label="$t('label').balance" align="center">
                 <template slot-scope="scope">
-                  {{$$.thousandBit($$.fromWei(scope.row.balance.toString(), scope.row.coinType), 'no')}}
+                  {{$$.thousandBit($$.fromWei(scope.row.balance.toString(), scope.row.coinType.replace('m', '')), 'no')}}
                 </template>
               </el-table-column>
               <el-table-column :label="$t('label').action" align="center" width="240">
                 <template slot-scope="scope">
-                  <el-button type="primary" size="mini" @click="prop.deposit = true">{{$t('btn').deposit}}</el-button>
-                  <el-button type="primary" size="mini" :disabled="!mBTCBalance" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '0', coinType: scope.row.coinType})">{{$t('btn').withdrawal}}</el-button>
-                  <el-button type="primary" size="mini" :disabled="!mBTCBalance" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '1', coinType: scope.row.coinType})">{{$t('btn').send}}</el-button>
+                  <el-button type="primary" size="mini" @click="openDepositView(scope.row)">{{$t('btn').deposit}}</el-button>
+                  <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance)" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '0', coinType: scope.row.coinType})">{{$t('btn').withdrawal}}</el-button>
+                  <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance)" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '1', coinType: scope.row.coinType})">{{$t('btn').send}}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -170,8 +170,8 @@
         <el-form>
           <el-form-item>
             <div class="flex-sc WW100">
-              <el-input type="number" v-model="btc.value" placeholder="0.00 BTC"></el-input>
-              <span v-if="btc.value" class="ml-10 W50 center">BTC</span>
+              <el-input type="number" v-model="deposit.value" :placeholder="'0.00' + (deposit.coinType ? deposit.coinType.replace('m', '') : '')"></el-input>
+              <span v-if="deposit.value" class="ml-10 W50 center">{{deposit.coinType ? deposit.coinType.replace('m', '') : ''}}</span>
             </div>
           </el-form-item>
           <el-form-item>
@@ -186,12 +186,13 @@
               <li class="item flex-sc">
                 <span class="label">You will receive</span>
                 <div class="value flex-sc">
-                  <div class="icon"><img src="@/assets/img/coin/mBTC.svg"></div>
+                  <!-- <div class="icon"><img src="@/assets/img/coin/mBTC.svg"></div> -->
+                  <div class="icon flex-c"><i class="el-icon-d-arrow-right"></i></div>
                   <span>
-                    {{btc.value ? 
-                    Number( (Number(btc.value) * ( 1 - Number(swapInfo.SwapFeeRate) ) ).toFixed(9))
+                    {{deposit.value && deposit.coinType? 
+                    Number( (Number(deposit.value) * ( 1 - Number(swapCoin[deposit.coinType].swapInfo.SwapFeeRate) ) ).toFixed(9))
                     : 
-                    '0.00000000'}} mBTC
+                    '0.00000000'}} {{deposit.coinType}}
                   </span>
                 </div>
               </li>
@@ -208,7 +209,7 @@
     <!-- 充值 view start -->
     <el-dialog :title="$t('btn').deposit" :visible.sync="prop.depositInfo" width="400px" :before-close="cancel" :close-on-click-modal="true" :modal-append-to-body='false'>
       <div>
-        <div class="flex-c font22 mb-20">{{$t('btn').deposit}} {{btc.value ? btc.value : $$.fromWei(btc.mintValue, 'BTC')}} BTC</div>
+        <div class="flex-c font22 mb-20">{{$t('btn').deposit}} {{deposit.value ? deposit.value : $$.fromWei(btc.mintValue, 'BTC')}} BTC</div>
         <div class="flex-c">
           <div id="BTCaddressQRcode"></div>
         </div>
@@ -408,7 +409,6 @@ export default {
       },
       btc: {
         address: '',
-        value: '',
         setTimeout: '',
         mintValue: 0,
         mintTip: false,
@@ -416,6 +416,9 @@ export default {
         status: '',
         from: ''
       },
+      deposit: {
+        value: 0
+      }
     }
   },
   computed: {
@@ -424,11 +427,15 @@ export default {
     },
     chainId () {
       return this.$store.state.chainID
+    },
+    swapCoin () {
+      return this.$store.state.swapCoin
     }
   },
   mounted () {
     this.activeName = this.$route.query.activeTab ? this.$route.query.activeTab : 'assets'
     this.init()
+    this.getAllSwapContract()
     // this.$$.web3.eth.subscribe('pendingTransactions', (err, res) => {
     //   console.log(err)
     //   console.log(res)
@@ -443,18 +450,18 @@ export default {
       this.prop.deposit = false
       this.prop.depositInfo = false
       this.prop.depositData = false
-      this.btc.value = ''
+      this.deposit.value = ''
     },
     depositView () {
-      if (!this.btc.value || Number(this.btc.value) === 0) {
+      if (!this.deposit.value || Number(this.deposit.value) === 0) {
         this.msgWarning(this.$t('warn').w_3)
         return
       }
-      if (Number(this.swapInfo.MinimumSwap) > Number(this.btc.value)) {
+      if (Number(this.swapInfo.MinimumSwap) > Number(this.deposit.value)) {
         this.msgError('Min value is:' + this.swapInfo.MinimumSwap)
         return
       }
-      if (Number(this.swapInfo.MaximumSwap) < Number(this.btc.value)) {
+      if (Number(this.swapInfo.MaximumSwap) < Number(this.deposit.value)) {
         this.msgError('Max value is:' + this.swapInfo.MaximumSwap)
         return
       }
@@ -569,35 +576,16 @@ export default {
       })
     },
     getCrossChain () {
-      let url = this.$$.swapRPC
-      this.getSwapContractAPI(url).then(res => {
-        if (res.swapInfo) {
-          this.swapInfo = res.swapInfo
-          this.TokenContract = res.contract
-          this.getBTCValue()
-        } else {
-          setTimeout(() => {
-            this.getCrossChain()
-          }, 3000)
-        }
-      })
-    },
-    getBTCValue () {
-      this.TokenContract.methods.balanceOf(this.address).call({from: this.address}, (err, res) => {
+      this.getSwapInfo().then(res => {
         this.swapTable = []
-        if (err) {
-          console.log('balanceOf:', err)
-        } else {
-          // console.log(res)
-          this.mBTCBalance = res
-          this.swapTable = [
-            {
-              coinType: 'BTC',
-              balance: res,
-              id: this.swapInfo.ContractAddress
-            }
-          ]
+        for (let obj in res) {
+          this.swapTable.push({
+            coinType: res[obj].coinType,
+            balance: res[obj].balance,
+            id: res[obj].id,
+          })
         }
+        console.log(res)
       })
     },
     getBTCAddress () {
@@ -644,6 +632,10 @@ export default {
           this.getSetTimeoutBTCTxns()
         }
       })
+    },
+    openDepositView (item) {
+      this.deposit = item
+      this.prop.deposit = true
     },
     openMintView () {
       this.prop.depositData = true

@@ -118,8 +118,8 @@
                 <template slot-scope="scope">
                   <div class="flex-sc">
                     <div class="coin-logo">
-                      <!-- {{$$.getCoinInfo(scope.row.coinType).logo}} -->
-                      <img :src="getCoinInfo(scope.row.coinType.replace('m', '')).logo">
+                      <img :src="getCoinInfo(scope.row.coinType.replace('m', '')).logo" v-if="getCoinInfo(scope.row.coinType.replace('m', ''))">
+                      <i class="null flex-c" v-else>{{scope.row.coinType ? scope.row.coinType.replace('m', '').substr(0,1) : '0x'}}</i>
                     </div>
                     <span>{{scope.row.coinType}}</span>
                   </div>
@@ -132,14 +132,17 @@
               </el-table-column>
               <el-table-column :label="$t('label').balance" align="center">
                 <template slot-scope="scope">
-                  {{$$.thousandBit($$.fromWei(scope.row.balance.toString(), scope.row.coinType.replace('m', '')), 'no')}}
+                  {{
+                    scope.row.ISSWITCH ? 
+                    $$.thousandBit($$.fromWei(scope.row.balance.toString(), scope.row.coinType.replace('m', '')), 'no')
+                    : '-'}}
                 </template>
               </el-table-column>
               <el-table-column :label="$t('label').action" align="center" width="240">
                 <template slot-scope="scope">
-                  <el-button type="primary" size="mini" @click="openDepositView(scope.row)">{{$t('btn').deposit}}</el-button>
-                  <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance)" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '0', coinType: scope.row.coinType})">{{$t('btn').withdrawal}}</el-button>
-                  <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance)" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '1', coinType: scope.row.coinType})">{{$t('btn').send}}</el-button>
+                  <el-button type="primary" size="mini" :disabled="!scope.row.ISSWITCH || !scope.row.ISDEPOSIT" @click="openDepositView(scope.row)">{{$t('btn').deposit}}</el-button>
+                  <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance) || !scope.row.ISSWITCH || !scope.row.ISREDEEM" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '0', coinType: scope.row.coinType})">{{$t('btn').withdrawal}}</el-button>
+                  <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance) || !scope.row.ISSWITCH" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '1', coinType: scope.row.coinType})">{{$t('btn').send}}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -170,8 +173,8 @@
         <el-form>
           <el-form-item>
             <div class="flex-sc WW100">
-              <el-input type="number" v-model="deposit.value" :placeholder="'0.00' + (deposit.coinType ? deposit.coinType.replace('m', '') : '')"></el-input>
-              <span v-if="deposit.value" class="ml-10 W50 center">{{deposit.coinType ? deposit.coinType.replace('m', '') : ''}}</span>
+              <el-input type="number" v-model="depositVal" :placeholder="'0.00' + (depositObj.coinType ? depositObj.coinType.replace('m', '') : '')"></el-input>
+              <span v-if="depositVal" class="ml-10 W50 center">{{depositObj.coinType ? depositObj.coinType.replace('m', '') : ''}}</span>
             </div>
           </el-form-item>
           <el-form-item>
@@ -189,10 +192,10 @@
                   <!-- <div class="icon"><img src="@/assets/img/coin/mBTC.svg"></div> -->
                   <div class="icon flex-c"><i class="el-icon-d-arrow-right"></i></div>
                   <span>
-                    {{deposit.value && deposit.coinType? 
-                    Number( (Number(deposit.value) * ( 1 - Number(swapCoin[deposit.coinType].swapInfo.SwapFeeRate) ) ).toFixed(9))
+                    {{depositVal && depositObj.coinType? 
+                    Number( (Number(depositVal) * ( 1 - Number(depositObj.FEE) ) ).toFixed(9))
                     : 
-                    '0.00000000'}} {{deposit.coinType}}
+                    '0.00000000'}} {{depositObj.coinType}}
                   </span>
                 </div>
               </li>
@@ -209,12 +212,15 @@
     <!-- 充值 view start -->
     <el-dialog :title="$t('btn').deposit" :visible.sync="prop.depositInfo" width="400px" :before-close="cancel" :close-on-click-modal="true" :modal-append-to-body='false'>
       <div>
-        <div class="flex-c font22 mb-20">{{$t('btn').deposit}} {{deposit.value ? deposit.value : $$.fromWei(btc.mintValue, 'BTC')}} BTC</div>
+        <div class="flex-c font22 mb-20">
+          {{$t('btn').deposit}} 
+          {{depositVal ? depositVal : $$.fromWei(btc.mintValue, depositObj.coinType ? depositObj.coinType.replace('m', '') : '')}} {{depositObj.coinType ? depositObj.coinType.replace('m', '') : ''}}</div>
         <div class="flex-c">
           <div id="BTCaddressQRcode"></div>
         </div>
-        <h6 class="font14 mt-20 color_gray">BTC ADDRESS：</h6>
-        <p class="cursorP" @click="copyTxt(btc.address)">{{btc.address}}<span class="font12 ml-10" style="color:#0099ff;">(Click copy)</span></p>
+        <h6 class="font14 mt-20 color_gray">{{depositObj.coinType}} ADDRESS：</h6>
+        <p class="cursorP" @click="copyTxt(depositObj.address)">{{depositObj.address}}<span class="font12 ml-10" style="color:#0099ff;">(Click copy)</span></p>
+        <p class="color_red mt-15">{{$t('tip').bridgeMintTip.replace('\{\{account\}\}', address)}}</p>
       </div>
     </el-dialog>
     <!-- 充值 view end -->
@@ -250,13 +256,21 @@
           <li class="item flex-sc">
             <span class="label WW30">Fee:</span>
             <div class="value flex-sc WW70">
-              <span> {{$$.fromWei(Number(btc.mintValue) * Number(swapInfo.SwapFeeRate), 'BTC')}} BTC </span>
+              <span> {{
+                $store.state.swapCoin['mBTC'] ? 
+                $$.fromWei(Number(btc.mintValue) * Number($store.state.swapCoin['mBTC'].fee), 'BTC')
+                : ''
+                }} BTC </span>
             </div>
           </li>
           <li class="item flex-sc">
             <span class="label WW30">Receive:</span>
             <div class="value flex-sc WW70">
-              <span> {{$$.fromWei(Number(btc.mintValue) * (1 - Number(swapInfo.SwapFeeRate), 'BTC'))}} mBTC </span>
+              <span> {{
+                $store.state.swapCoin['mBTC'] ? 
+                $$.fromWei(Number(btc.mintValue) * (1 - Number($store.state.swapCoin['mBTC'].fee), 'BTC'))
+                : ''
+                }} mBTC </span>
             </div>
           </li>
           <li class="item flex-sc">
@@ -372,7 +386,6 @@
 
 <script>
 import coinInfo from '@/config/coininfo.js'
-// import swapABI from '@/config/swapABI.js'
 import {swapTokenContract} from './js/swapContract'
 export default {
   name: 'account',
@@ -416,9 +429,10 @@ export default {
         status: '',
         from: ''
       },
-      deposit: {
+      depositObj: {
         value: 0
-      }
+      },
+      depositVal: ''
     }
   },
   computed: {
@@ -450,25 +464,35 @@ export default {
       this.prop.deposit = false
       this.prop.depositInfo = false
       this.prop.depositData = false
-      this.deposit.value = ''
+      this.depositVal = ''
     },
     depositView () {
-      if (!this.deposit.value || Number(this.deposit.value) === 0) {
+      if (!this.depositVal || Number(this.depositVal) === 0) {
         this.msgWarning(this.$t('warn').w_3)
         return
       }
-      if (Number(this.swapInfo.MinimumSwap) > Number(this.deposit.value)) {
-        this.msgError('Min value is:' + this.swapInfo.MinimumSwap)
+      if (Number(this.depositObj.MINNUM) > Number(this.depositVal)) {
+        this.msgError('Min value is:' + this.depositObj.MINNUM)
         return
       }
-      if (Number(this.swapInfo.MaximumSwap) < Number(this.deposit.value)) {
-        this.msgError('Max value is:' + this.swapInfo.MaximumSwap)
+      if (Number(this.depositObj.MAXNUM) < Number(this.depositVal)) {
+        this.msgError('Max value is:' + this.depositObj.MAXNUM)
         return
+      }
+      if (this.depositObj.coinType === 'ANY') {
+        this.depositObj.address = address
+      } else if (this.depositObj.coinType === 'mBTC') {
+        this.depositObj.address = this.btc.address
+      } else if (this.depositObj.DEPOSIT_ADDRESS) {
+        this.depositObj.address = this.depositObj.DEPOSIT_ADDRESS
+      } else {
+        this.depositObj.address = ''
       }
       this.prop.deposit = false
       this.prop.depositInfo = true
+      // this.depositObj.address = this.depositObj.coinType === 'mBTC' ? this.btc.address : this.depositObj.id
       this.$nextTick(() => {
-        this.$$.qrCode(this.btc.address, 'BTCaddressQRcode')
+        this.$$.qrCode(this.depositObj.address, 'BTCaddressQRcode')
       })
     },
     handleClick () {
@@ -580,15 +604,14 @@ export default {
         this.swapTable = []
         for (let obj in res) {
           this.swapTable.push({
-            coinType: res[obj].coinType,
-            balance: res[obj].balance,
-            id: res[obj].id,
+            ...res[obj]
           })
         }
         console.log(res)
       })
     },
     getBTCAddress () {
+      if (this.chainId !== '46688') return
       this.registerAddress(this.$$.swapRPC, this.address).then(res => {
         // console.log(res)
         if (res.result) {
@@ -598,15 +621,16 @@ export default {
       })
     },
     getBTCtxnsAll () {
+      if (this.chainId !== '46688') return
       // let url = `https://sochain.com/api/v2/get_tx_unspent/BTC/${this.btc.address}` // 主网
       let url = `https://sochain.com/api/v2/get_tx_received/BTCTEST/${this.btc.address}` // 测试网
       this.btc.mintValue = 0
       this.getBTCTxnsAPI(url).then(res => {
-        console.log(res)
+        // console.log(res)
         if (res.status === "success" && res.data && res.data.txs.length > 0) {
           let useTxns = res.data.txs[res.data.txs.length - 1]
           this.getTxnStatusAPI(this.$$.swapRPC, useTxns.txid).then(txns => {
-            console.log(txns)
+            // console.log(txns)
             if (txns.result) {
               // this.btc.mintValue = txns.result.value
               // this.btc.mintTip = true
@@ -634,7 +658,7 @@ export default {
       })
     },
     openDepositView (item) {
-      this.deposit = item
+      this.depositObj = item
       this.prop.deposit = true
     },
     openMintView () {

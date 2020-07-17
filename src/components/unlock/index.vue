@@ -87,7 +87,7 @@ export default {
         to: this.txnsData.to,
         value: this.txnsData.value,
         data: this.txnsData.input,
-        chainId: this.txnsData.chainId
+        chainId: this.$$.web3.utils.toHex(this.txnsData.chainId)
       }
       console.log(this.txnsData)
       console.log(rawTx)
@@ -100,8 +100,6 @@ export default {
       }
     },
     ledgerToSign (rawTx) {
-      // console.log(rawTx)
-      // console.log(this.$$.web3.utils.hexToNumber(rawTx.chainId))
       ledger(this.HDPath, rawTx).then(res => {
         this.getSign(res)
       })

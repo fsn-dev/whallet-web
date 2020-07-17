@@ -20,7 +20,7 @@
 
 <script>
 import swapWeb3 from '@/assets/js/web3/swap.js'
-import swapABI from '@/config/swapABI.js'
+import swapABI from '@/config/ABI/swapABI.js'
 export default {
   name: 'test',
   data () {

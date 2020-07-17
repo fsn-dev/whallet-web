@@ -1,5 +1,6 @@
-import swapABI from '@/config/swapABI.js'
-import swapETHABI from '@/config/swapETHABI.js'
+import swapABI from '@/config/ABI/swapABI.js'
+import swapETHABI from '@/config/ABI/swapETHABI.js'
+import tokens from '@/config/tokens.js'
 
 export const swapTokenContract = {
   getSwapCoinInfo () {
@@ -9,57 +10,52 @@ export const swapTokenContract = {
       {coinType: 'mUSDT', url: 'https://testnet.smpcwallet.com/usdt2fsn'},
     ]
   },
-  getSwapContractAPI (url, coin) {
+  getSwapContractAPI (ContractAddress, swapInfo) {
     let address = this.$store.state.address
     return new Promise(resolve => {
-      this.$axios.post(url, {
-        id:0,
-        jsonrpc:"2.0",
-        method:"swap.GetServerInfo",
-        params:[]
-      }).then(res => {
-        let data = res.data.result
-        let ABI = coin === 'mBTC' ? swapABI : swapETHABI
-        let contract = new this.$$.web3.eth.Contract(ABI, data.DestToken.ContractAddress)
+      if (swapInfo.ISSWITCH) {
+        let ABI = swapInfo.SYMBOL === 'mBTC' ? swapABI : swapETHABI
+        let contract = new this.$$.web3.eth.Contract(ABI, ContractAddress)
         contract.methods.balanceOf(address).call({from: address}, (err, res) => {
           let balance = 0
           if (!err) {
             balance = res
           }
+          console.log(res)
           resolve({
-            id: data.DestToken.ContractAddress,
-            coinType: coin,
+            ...swapInfo,
+            id: ContractAddress,
+            coinType: swapInfo.SYMBOL,
             balance: balance,
-            swapInfo: data.DestToken,
             contract: contract
           })
         })
-      }).catch(err => {
-        console.log(err)
+      } else {
         resolve({
+          ...swapInfo,
           id: '',
-          coinType: coin,
-          balance: 0,
-          swapInfo: {},
-          contract: {}
+          coinType: swapInfo.SYMBOL,
+          balance: '-',
+          contract: ''
         })
-      })
+      }
     })
   },
   getAllSwapContract () {
-    let arr = [], coinList = this.getSwapCoinInfo()
-    for (let obj of coinList) {
-      arr.push(this.getSwapContractAPI(obj.url, obj.coinType))
+    let chainID = this.$store.state.chainID
+    let arr = [], coinList = tokens[chainID]
+    for (let obj in coinList) {
+      arr.push(this.getSwapContractAPI(obj, coinList[obj]))
     }
     return new Promise(resolve => {
       Promise.all(arr).then(res => {
         let coinObj = {}
-        for (let i = 0, len = coinList.length; i < len; i++) {
-          let obj = coinList[i]
+        for (let i = 0, len = res.length; i < len; i++) {
+          let obj = res[i]
           coinObj[obj.coinType] = res[i]
         }
         resolve(coinObj)
-        // resolve(res)
+        resolve(res)
       })
     })
   },

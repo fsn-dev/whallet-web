@@ -130,13 +130,6 @@ export default {
     '$route' (cur) {
       this.newsView(cur)
     },
-    // networkUrl (nodeUrl) {
-    //   let chainID = this.$$.web3.utils.toHex('32659')
-    //   if ( nodeUrl === 'https://testnet.fsn.dev/api') {
-    //     chainID = this.$$.web3.utils.toHex('46688')
-    //   }
-    //   this.$store.commit("setChainID", chainID)
-    // }
   },
   computed: {
     networkUrl () {
@@ -177,7 +170,7 @@ export default {
       localStorage.setItem('networkID', this.network.id)
       localStorage.setItem('chainID', this.network.chainID)
       this.$store.commit("setNetwork", this.network.url)
-      this.$store.commit("setChainID", this.$$.web3.utils.toHex(this.network.chainID))
+      this.$store.commit("setChainID", this.network.chainID)
       this.refresh()
       this.modalClick()
     },

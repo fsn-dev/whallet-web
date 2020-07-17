@@ -9,6 +9,16 @@ export default{
     "isCase": 0,
     "dollarURL": "https://api.coinmarketcap.com/v1/ticker/fusion/"
   },
+  "ANY": {
+    "coinName": "Anyswap",
+    "logo": require("@/assets/img/coin/ANY.svg"),
+    "token": "",
+    "hashFM": "",
+    "limit": 0,
+    "rate": 18,
+    "isCase": 0,
+    "dollarURL": "https://api.coinmarketcap.com/v1/ticker/atomic-coin/"
+  },
   "ATOM": {
     "coinName": "Atomic Coin",
     "logo": require("@/assets/img/coin/atom.png"),
@@ -130,7 +140,7 @@ export default{
   },
   "XRP": {
     "coinName": "XRP",
-    "logo": require("@/assets/img/coin/evt1.png"),
+    "logo": require("@/assets/img/coin/mXRP.png"),
     "token": "tokentx",
     "hashFM": "",
     "limit": 0,
@@ -141,6 +151,16 @@ export default{
   "EVT1": {
     "coinName": "EVT1",
     "logo": require("@/assets/img/coin/evt1.png"),
+    "token": "tokentx",
+    "hashFM": "",
+    "limit": 0,
+    "rate": 5,
+    "isCase": 0,
+    "dollarURL": "https://api.cryptorank.io/v0/coins/everitoken/tickers"
+  },
+  "LTC": {
+    "coinName": "EVT1",
+    "logo": require("@/assets/img/coin/mLTC.png"),
     "token": "tokentx",
     "hashFM": "",
     "limit": 0,

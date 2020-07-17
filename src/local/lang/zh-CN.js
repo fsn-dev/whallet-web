@@ -114,6 +114,7 @@ export default {
 	tip: {
 		net: '此浏览器不支持U2F。请尝试使用带有安全（ssl/https）连接的Google Chrome！',
 		selectAddr: '请选择您想要交互的地址。',
-		addNode: '看起来您还没有一个短的帐号(SAN)。FUSION的SAN是一个8个字符的钱包地址，就像你的电话号码一样容易记住。单击下面的按钮生成一个。'
+		addNode: '看起来您还没有一个短的帐号(SAN)。FUSION的SAN是一个8个字符的钱包地址，就像你的电话号码一样容易记住。单击下面的按钮生成一个。',
+		bridgeMintTip: "只有从与当前钱包一致的ETH钱包地址 {{account}} 转帐到充值地址才会到账！！！",
 	}
 }

@@ -144,7 +144,6 @@ export default {
         init: true
       },
       assetId: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-      // chainId: this.$$.web3.utils.toHex('46688'),
       urlParams: '',
       maxFee: 0,
       isToAsset: false,

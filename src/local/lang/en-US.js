@@ -113,6 +113,7 @@ export default {
 	tip: {
 		net: 'U2F not supported in this browser. Please try using Google Chrome with a secure (SSL / HTTPS) connection!',
 		selectAddr: 'Please select the address you would like to interact with.',
-		addNode: 'IT LOOKS LIKE YOU DON’T HAVE A SHORT ACCOUNT NUMBER (SAN) YET. FUSION’S SAN IS AN 8 CHARACTER VERSION OF YOUR WALLET ADDRESS THAT’S AS EASY TO REMEMBER AS YOUR PHONE NUMBER. CLICK THE BUTTON BELOW TO GENERATE ONE.'
+		addNode: 'IT LOOKS LIKE YOU DON’T HAVE A SHORT ACCOUNT NUMBER (SAN) YET. FUSION’S SAN IS AN 8 CHARACTER VERSION OF YOUR WALLET ADDRESS THAT’S AS EASY TO REMEMBER AS YOUR PHONE NUMBER. CLICK THE BUTTON BELOW TO GENERATE ONE.',
+		"bridgeMintTip": "ONLY the deposits from your ETH wallet {{account}} will be credited!!!",
 	}
 }

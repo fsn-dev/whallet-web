@@ -96,7 +96,8 @@ export default {
 		depositing: 'Depositing',
 		confirming: 'Confirming',
 		swapping: 'Swapping',
-		timeout: 'Timeout'
+		timeout: 'Timeout',
+		comingSoon: 'Coming soon！'
 	},
 	action: {
 	},

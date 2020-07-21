@@ -97,7 +97,8 @@ export default {
 		depositing: '充值中',
 		confirming: '确认中',
 		swapping: '交换中',
-		timeout: '超时'
+		timeout: '超时',
+		comingSoon: '即将上线！'
 	},
 	action: {
 	},

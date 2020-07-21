@@ -109,7 +109,7 @@ export default {
   data () {
     return {
       networkOPtion: [
-        {name: 'Mainnet', url: 'https://fsn.dev/api'},
+        {name: 'Mainnet', url: 'https://mainnet.anyswap.exchange'},
         {name: 'Testnet', url: 'https://testnet.fsn.dev/api'},
         {name: 'Custom', url: ''},
       ],

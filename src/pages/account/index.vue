@@ -127,7 +127,11 @@
               </el-table-column>
               <el-table-column label="ID" align="center">
                 <template slot-scope="scope">
-                  {{$$.cutOut(scope.row.id, 8, 6)}}
+                  <span v-if="scope.row.ISSWITCH">{{$$.cutOut(scope.row.id, 8, 6)}}</span>
+                  <span v-else class="flex-c font12 color_99">
+                    <i class="el-icon-timer"></i>
+                    {{$t('state').comingSoon}}
+                  </span>
                 </template>
               </el-table-column>
               <el-table-column :label="$t('label').balance" align="center">

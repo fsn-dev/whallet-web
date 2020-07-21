@@ -1,14 +1,14 @@
 export default {
   '32659': {
-    'ANY': { // ANY
+    '0x0c74199D22f732039e843366a236Ff4F61986B32': { // ANY
       NAME: 'Anyswap',
       SYMBOL: 'ANY',
       DECIMALS: 18,
       MAXNUM: 1000000,
       MINNUM: 0.1,
       FEE: 0.001,
-      EXCHANGE_ADDRESS: 'ANY',
-      ISSWITCH: 0,
+      EXCHANGE_ADDRESS: '0x049ddc3cd20ac7a2f6c867680f7e21de70aca9c3',
+      ISSWITCH: 1,
       ISDEPOSIT: 0,
       ISREDEEM: 0,
       DEPOSIT_ADDRESS: ''
@@ -89,8 +89,8 @@ export default {
       FEE: 0.001,
       EXCHANGE_ADDRESS: '0x4dee5f0705ff478b452419375610155b5873ef5b',
       ISSWITCH: 1,
-      ISDEPOSIT: 1,
-      ISREDEEM: 1,
+      ISDEPOSIT: 0,
+      ISREDEEM: 0,
       DEPOSIT_ADDRESS: ''
     },
     '0xeaeaeb2cf9921a084ef528f43e9e121e8291a947': { // mBTC
@@ -117,7 +117,7 @@ export default {
       ISSWITCH: 1,
       ISDEPOSIT: 1,
       ISREDEEM: 1,
-      DEPOSIT_ADDRESS: ''
+      DEPOSIT_ADDRESS: '0xA79caC8B8ac2117C937B6c3ed3d888416F52d57e'
     },
     '0x19543338473caaa6f404dbe540bb787f389d5462': { // mUSDT
       NAME: 'Tether',
@@ -130,7 +130,7 @@ export default {
       ISSWITCH: 1,
       ISDEPOSIT: 1,
       ISREDEEM: 1,
-      DEPOSIT_ADDRESS: ''
+      DEPOSIT_ADDRESS: '0x053C71206957422E1932481B7454Eee3112AFe95'
     },
     'mXRP': { // mXRP
       NAME: 'SMPC XRP',

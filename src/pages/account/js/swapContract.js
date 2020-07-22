@@ -21,7 +21,7 @@ export const swapTokenContract = {
           if (!err) {
             balance = res
           }
-          console.log(res)
+          // console.log(res)
           resolve({
             ...swapInfo,
             id: ContractAddress,

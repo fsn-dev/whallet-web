@@ -118,9 +118,9 @@ export default {
     },
     getCrossChain () {
       this.getSwapInfo().then(res => {
-        this.swapInfo = res[this.urlParams.coinType].swapInfo
+        // console.log(res)
+        this.swapInfo = res[this.urlParams.coinType]
         this.TokenContract = res[this.urlParams.coinType].contract
-        console.log(this.TokenContract)
         this.loading.init = false
       })
       // let url = this.$$.swapRPC
@@ -156,12 +156,12 @@ export default {
         this.msgWarning(this.$t('warn').w_3)
         return
       }
-      if (Number(this.swapInfo.MinimumSwap) > Number(this.formData.value)) {
-        this.msgError('Min value is:' + this.swapInfo.MinimumSwap)
+      if (Number(this.swapInfo.MINNUM) > Number(this.formData.value)) {
+        this.msgError('Min value is:' + this.swapInfo.MINNUM)
         return
       }
-      if (Number(this.swapInfo.MaximumSwap) < Number(this.formData.value)) {
-        this.msgError('Max value is:' + this.swapInfo.MaximumSwap)
+      if (Number(this.swapInfo.MAXNUM) < Number(this.formData.value)) {
+        this.msgError('Max value is:' + this.swapInfo.MAXNUM)
         return
       }
       if (Number(this.formData.value) > Number(this.balance)) {
@@ -193,18 +193,32 @@ export default {
         gas: '',
         gasPrice: "",
         nonce: "",
-        to: this.swapInfo.ContractAddress,
-        value: "0x0"
+        to: this.swapInfo.id,
+        value: "0x0",
+        input: ''
       }
       let count = 0, time = Date.now()
+      let value = this.$$.toWei(this.formData.value, this.urlParams.coinType.replace('m', ''))
+      // let value = this.formData.value
+      if (Number(this.urlParams.sendType) === 0) {
+        // console.log(this.urlParams.coinType)
+        if (this.urlParams.coinType === 'mBTC') {
+          data.input = this.TokenContract.methods.Swapout(value, this.formData.address).encodeABI()
+        } else {
+          data.input = this.TokenContract.methods.Swapout(value).encodeABI()
+        }
+      } else {
+        data.input = this.TokenContract.methods.transfer(this.formData.address, value).encodeABI()
+      }
       console.log(data)
       const batch = new this.$$.web3.BatchRequest()
       // batch.add(this.$$.web3.eth.estimateGas.request({to: this.swapInfo.ContractAddress}, (err, res) => {
-      batch.add(this.$$.web3.eth.estimateGas.request({to: this.swapInfo.DcrmAddress}, (err, res) => {
+      batch.add(this.$$.web3.eth.estimateGas.request({to: this.swapInfo.id, data: data.input}, (err, res) => {
         if (err) {
           console.log(err)
+          data.gas = this.$$.web3.utils.toHex(12600 * 100)
+          count ++
         } else {
-          // console.log(1)
           data.gas = this.$$.web3.utils.toHex(res * 6)
           count ++
         }
@@ -243,18 +257,18 @@ export default {
     },
     getInputData () {
       try {
-        let value = this.$$.toWei(this.formData.value, this.urlParams.coinType.replace('m', ''))
-        // let value = this.formData.value
-        if (Number(this.urlParams.sendType) === 0) {
-          // console.log(this.urlParams.coinType)
-          if (this.urlParams.coinType === 'mBTC') {
-            this.dataPage.input = this.TokenContract.methods.Swapout(value, this.formData.address).encodeABI()
-          } else {
-            this.dataPage.input = this.TokenContract.methods.Swapout(value).encodeABI()
-          }
-        } else {
-          this.dataPage.input = this.TokenContract.methods.transfer(this.formData.address, value).encodeABI()
-        }
+        // let value = this.$$.toWei(this.formData.value, this.urlParams.coinType.replace('m', ''))
+        // // let value = this.formData.value
+        // if (Number(this.urlParams.sendType) === 0) {
+        //   // console.log(this.urlParams.coinType)
+        //   if (this.urlParams.coinType === 'mBTC') {
+        //     this.dataPage.input = this.TokenContract.methods.Swapout(value, this.formData.address).encodeABI()
+        //   } else {
+        //     this.dataPage.input = this.TokenContract.methods.Swapout(value).encodeABI()
+        //   }
+        // } else {
+        //   this.dataPage.input = this.TokenContract.methods.transfer(this.formData.address, value).encodeABI()
+        // }
         this.maxFee = this.$$.web3.utils.hexToNumber(this.dataPage.gasPrice) * this.$$.web3.utils.hexToNumber(this.dataPage.gas)
         this.maxFee = this.$$.web3.utils.fromWei(this.maxFee.toString(), 'ether')
         console.log(this.dataPage)

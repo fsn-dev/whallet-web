@@ -79,6 +79,7 @@ export default {
         balance = web3.utils.fromWei(balance, 'ether')
       }
     }
+    // console.log(balance)
     return balance
   },
   toWei (balance, coin, dec) {
@@ -121,7 +122,10 @@ export default {
     // console.log(balance)
     return balance
   },
-  thousandBit (num, dec = 2) {
+  thousandBit (num, dec = 8) {
+    if (!Number(num)) return '0.00'
+    if (Number(num) < 0.00000001) return '<0.00000001'
+    if (Number(num) < 1000) return num
     let _num = num = Number(num)
     if (isNaN(num)) {
       num = 0

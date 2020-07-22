@@ -138,7 +138,13 @@
                 <template slot-scope="scope">
                   {{
                     scope.row.ISSWITCH ? 
-                    $$.thousandBit($$.fromWei(scope.row.balance.toString(), scope.row.coinType.replace('m', '')), 'no')
+                    $$.thousandBit(
+                      $$.fromWei(
+                        scope.row.balance.toString(),
+                        scope.row.coinType.replace('m', ''),
+                        scope.row.DECIMALS),
+                      'no'
+                    )
                     : '-'}}
                 </template>
               </el-table-column>

@@ -170,7 +170,7 @@ export default {
   mounted () {
     this.urlParams = this.$route.query
     this.assetId = this.urlParams.id
-    this.balance = this.$$.fromWei(this.urlParams.balance, this.urlParams.coinType, this.urlParams.dec)
+    this.balance = this.$$.fromWei(this.urlParams.balance, this.urlParams.dec)
     this.sendType = this.urlParams.type
     if (this.sendType === '1') {
       let startTime = this.urlParams.StartTime.toString().length < 13 ? Number(this.urlParams.StartTime) * 1000 : Number(this.urlParams.StartTime)

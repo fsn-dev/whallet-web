@@ -113,7 +113,7 @@ export default {
     init () {
       this.urlParams = this.$route.query
       console.log(this.urlParams)
-      this.balance = this.$$.fromWei(this.urlParams.balance, this.urlParams.coinType.replace('m', ''))
+      this.balance = this.$$.fromWei(this.urlParams.balance, this.urlParams.dec)
       this.getCrossChain()
     },
     getCrossChain () {

@@ -15,6 +15,8 @@ import web3 from '@/assets/js/web3/index.js'
 
 import {BigNumber} from 'bignumber.js'
 
+import { ethers } from 'ethers'
+
 
 export default {
   fromTime (timestamp) {
@@ -46,42 +48,106 @@ export default {
     }
     return ''
   },
-  fromWei (balance, coin, dec) {
-    if (!balance) return 0
-    balance = balance.toString()
-    coin = coin ? coin.toUpperCase() : ''
-    // console.log(coinInfo)
-    let coinInfo = this.getCoinInfo(coin, 'rate')
-    // console.log(coinInfo)
-    if (dec || dec === 0 || (coin && coinInfo && typeof coinInfo.rate !== 'undefined')) {
-      let d = dec || dec === 0 ? Number(dec) : Number(coinInfo.rate)
-      if (d === 15) {
-        balance = web3.utils.fromWei(balance, 'milli')
-      } else if (d === 18) {
-        balance = web3.utils.fromWei(balance, 'ether')
-      } else if (d === 21) {
-        balance = web3.utils.fromWei(balance, 'grand')
-      } else if (d === 24) {
-        balance = web3.utils.fromWei(balance, 'mether')
-      } else if (d === 27) {
-        balance = web3.utils.fromWei(balance, 'gether')
-      } else if (d === 30) {
-        balance = web3.utils.fromWei(balance, 'tether')
-      } else {
-        balance = Number(balance) / Math.pow(10, d)
-        balance = new BigNumber(balance)
-        balance = balance.toFormat().replace(/,/g, '')
+  fromWei (amount, baseDecimals = 18, displayDecimals = 8, useLessThan = true) {
+    // console.log(amount)
+    // console.log(baseDecimals)
+    // console.log(typeof amount)
+    if (amount === '-') return '-'
+    if (!amount || isNaN(amount)) return '0'
+    amount = ethers.utils.bigNumberify(amount)
+    displayDecimals = Math.min(displayDecimals, baseDecimals)
+    if (baseDecimals > 18 || displayDecimals > 18 || displayDecimals > baseDecimals) {
+      throw Error(`Invalid combination of baseDecimals '${baseDecimals}' and displayDecimals '${displayDecimals}.`)
+    }
+  
+    // if balance is falsy, return undefined
+    if (!amount) {
+      return undefined
+    }
+    // if amount is 0, return
+    else if (amount.isZero()) {
+      return '0'
+    }
+
+    else {
+      // amount of 'wei' in 1 'ether'
+      const baseAmount = ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(baseDecimals))
+  
+      const minimumDisplayAmount = baseAmount.div(
+        ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(displayDecimals))
+      )
+  
+      // if balance is less than the minimum display amount
+      if (amount.lt(minimumDisplayAmount)) {
+        return useLessThan
+          ? `<${ethers.utils.formatUnits(minimumDisplayAmount, baseDecimals)}`
+          : `${ethers.utils.formatUnits(amount, baseDecimals)}`
       }
-    } else {
-      if (coin === 'GWEI') {
-        balance = web3.utils.fromWei(balance, 'gwei')
-      } else {
-        balance = web3.utils.fromWei(balance, 'ether')
+      // if the balance is greater than the minimum display amount
+      else {
+        const stringAmount = ethers.utils.formatUnits(amount, baseDecimals)
+  
+        // if there isn't a decimal portion
+        if (!stringAmount.match(/\./)) {
+          return stringAmount
+        }
+        // if there is a decimal portion
+        else {
+          const [wholeComponent, decimalComponent] = stringAmount.split('.')
+          const roundedDecimalComponent = ethers.utils
+            .bigNumberify(decimalComponent.padEnd(baseDecimals, '0'))
+            .toString()
+            .padStart(baseDecimals, '0')
+            .substring(0, displayDecimals)
+  
+          // decimals are too small to show
+          if (roundedDecimalComponent === '0'.repeat(displayDecimals)) {
+            return wholeComponent
+          }
+          // decimals are not too small to show
+          else {
+            return `${wholeComponent}.${roundedDecimalComponent.toString().replace(/0*$/, '')}`
+          }
+        }
       }
     }
-    // console.log(balance)
-    return balance
   },
+  // fromWei (balance, coin, dec) {
+  //   if (!balance) return 0
+  //   balance = balance.toString()
+  //   coin = coin ? coin.toUpperCase() : ''
+  //   // console.log(coinInfo)
+  //   let coinInfo = this.getCoinInfo(coin, 'rate')
+  //   // console.log(coinInfo)
+  //   if (dec || dec === 0 || (coin && coinInfo && typeof coinInfo.rate !== 'undefined')) {
+  //     let d = dec || dec === 0 ? Number(dec) : Number(coinInfo.rate)
+  //     if (d === 15) {
+  //       balance = web3.utils.fromWei(balance, 'milli')
+  //     } else if (d === 18) {
+  //       balance = web3.utils.fromWei(balance, 'ether')
+  //     } else if (d === 21) {
+  //       balance = web3.utils.fromWei(balance, 'grand')
+  //     } else if (d === 24) {
+  //       balance = web3.utils.fromWei(balance, 'mether')
+  //     } else if (d === 27) {
+  //       balance = web3.utils.fromWei(balance, 'gether')
+  //     } else if (d === 30) {
+  //       balance = web3.utils.fromWei(balance, 'tether')
+  //     } else {
+  //       balance = Number(balance) / Math.pow(10, d)
+  //       balance = new BigNumber(balance)
+  //       balance = balance.toFormat().replace(/,/g, '')
+  //     }
+  //   } else {
+  //     if (coin === 'GWEI') {
+  //       balance = web3.utils.fromWei(balance, 'gwei')
+  //     } else {
+  //       balance = web3.utils.fromWei(balance, 'ether')
+  //     }
+  //   }
+  //   // console.log(balance)
+  //   return balance
+  // },
   toWei (balance, coin, dec) {
     if (!balance) return 0
     // balance = balance.toString()
@@ -125,7 +191,13 @@ export default {
   thousandBit (num, dec = 8) {
     if (!Number(num)) return '0.00'
     if (Number(num) < 0.00000001) return '<0.00000001'
-    if (Number(num) < 1000) return num
+    if (Number(num) < 1000) {
+      if (isNaN(dec)) {
+        return num
+      } else {
+        return Number(num).toFixed(dec)
+      }
+    }
     let _num = num = Number(num)
     if (isNaN(num)) {
       num = 0

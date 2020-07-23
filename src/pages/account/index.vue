@@ -10,7 +10,7 @@
         <li class="item">
           <h6 class="h6">mBTC BALANCE</h6>
           <p class="p"><span class="font18 mr-10">≈ {{$$.thousandBit(
-            $$.fromWei(mBTCBalance, 'BTC')
+            $$.fromWei(mBTCBalance, 8)
           , 8)}}</span>mBTC</p>
         </li>
         <li class="item">
@@ -37,7 +37,14 @@
             <el-table :data="balanceData" style="width: 100%" :max-height="800" empty-text="Null" v-if="refresh.table">
               <el-table-column :label="$t('label').coin" align="left">
                 <template slot-scope="scope">
-                  <div class="flex-sc">
+                  <div class="flex-sc" v-if="scope.row.SYMBOL && scope.row.SYMBOL === 'ANY'">
+                    <div class="coin-logo">
+                      <img :src="getCoinInfo(scope.row.SYMBOL).logo" v-if="getCoinInfo(scope.row.SYMBOL)">
+                      <i class="null flex-c" v-else>{{scope.row.SYMBOL ? scope.row.SYMBOL.substr(0,1) : '0x'}}</i>
+                    </div>
+                    <span :title="scope.row.SYMBOL">{{scope.row.SYMBOL}}</span>
+                  </div>
+                  <div class="flex-sc" v-else>
                     <div class="coin-logo">
                       <img :src="getCoinInfo(scope.row.Symbol).logo" v-if="getCoinInfo(scope.row.Symbol)">
                       <i class="null flex-c" v-else>{{scope.row.Symbol ? scope.row.Symbol.substr(0,1) : '0x'}}</i>
@@ -53,12 +60,29 @@
               </el-table-column>
               <el-table-column :label="$t('label').balance" align="center">
                 <template slot-scope="scope">
-                  {{$$.thousandBit($$.fromWei(scope.row.balance.toString(), scope.row.Symbol, scope.row.Decimals), 'no')}}
+                  <span v-if="scope.row.SYMBOL && scope.row.SYMBOL === 'ANY'">
+                    {{$$.thousandBit($$.fromWei(scope.row.balance, scope.row.DECIMALS), 'no')}}
+                  </span>
+                  <span v-else>
+                    {{$$.thousandBit($$.fromWei(scope.row.balance, scope.row.Decimals), 'no')}}
+                  </span>
                 </template>
               </el-table-column>
               <el-table-column :label="$t('label').action" align="right">
                 <template slot-scope="scope">
-                  <el-button type="primary" size="mini" @click="toUrl('/send', {id: scope.row.id, balance: scope.row.balance, type: '0', dec: scope.row.Decimals, coinType: scope.row.Symbol})">{{$t('btn').send}}</el-button>
+                  <el-button
+                    type="primary"
+                    size="mini"
+                    v-if="scope.row.SYMBOL && scope.row.SYMBOL === 'ANY'"
+                    :disabled="!Number(scope.row.balance) || !scope.row.ISSWITCH"
+                    @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '1', coinType: scope.row.coinType, dec: scope.row.DECIMALS})"
+                  >{{$t('btn').send}}</el-button>
+                  <el-button
+                    type="primary"
+                    size="mini"
+                    v-else
+                    @click="toUrl('/send', {id: scope.row.id, balance: scope.row.balance, type: '0', dec: scope.row.Decimals, coinType: scope.row.Symbol})"
+                  >{{$t('btn').send}}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -100,7 +124,7 @@
                 </el-table-column>
                 <el-table-column :label="$t('label').balance" align="center">
                   <template slot-scope="scope">
-                    {{$$.fromWei(scope.row.Value.toString(), items.Symbol, items.Decimals)}}
+                    {{$$.fromWei(scope.row.Value, items.Decimals)}}
                   </template>
                 </el-table-column>
                 <el-table-column :label="$t('label').action" align="right">
@@ -137,11 +161,10 @@
               <el-table-column :label="$t('label').balance" align="center">
                 <template slot-scope="scope">
                   {{
-                    scope.row.ISSWITCH ? 
+                    scope.row.ISSWITCH && scope.row.balance !== '-' ? 
                     $$.thousandBit(
                       $$.fromWei(
-                        scope.row.balance.toString(),
-                        scope.row.coinType.replace('m', ''),
+                        scope.row.balance,
                         scope.row.DECIMALS),
                       'no'
                     )
@@ -151,8 +174,8 @@
               <el-table-column :label="$t('label').action" align="center" width="240">
                 <template slot-scope="scope">
                   <el-button type="primary" size="mini" :disabled="!scope.row.ISSWITCH || !scope.row.ISDEPOSIT" @click="openDepositView(scope.row)">{{$t('btn').deposit}}</el-button>
-                  <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance) || !scope.row.ISSWITCH || !scope.row.ISREDEEM" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '0', coinType: scope.row.coinType})">{{$t('btn').withdrawal}}</el-button>
-                  <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance) || !scope.row.ISSWITCH" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '1', coinType: scope.row.coinType})">{{$t('btn').send}}</el-button>
+                  <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance) || !scope.row.ISSWITCH || !scope.row.ISREDEEM" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '0', coinType: scope.row.coinType, dec: scope.row.DECIMALS})">{{$t('btn').withdrawal}}</el-button>
+                  <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance) || !scope.row.ISSWITCH" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '1', coinType: scope.row.coinType, dec: scope.row.DECIMALS})">{{$t('btn').send}}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -224,13 +247,13 @@
       <div>
         <div class="flex-c font22 mb-20">
           {{$t('btn').deposit}} 
-          {{depositVal ? depositVal : $$.fromWei(btc.mintValue, depositObj.coinType ? depositObj.coinType.replace('m', '') : '')}} {{depositObj.coinType ? depositObj.coinType.replace('m', '') : ''}}</div>
+          {{depositVal ? depositVal : $$.fromWei(btc.mintValue, depositObj.DECIMALS)}} {{depositObj.coinType ? depositObj.coinType.replace('m', '') : ''}}</div>
         <div class="flex-c">
           <div id="BTCaddressQRcode"></div>
         </div>
         <h6 class="font14 mt-20 color_gray">{{depositObj.coinType}} ADDRESS：</h6>
         <p class="cursorP" @click="copyTxt(depositObj.address)">{{depositObj.address}}<span class="font12 ml-10" style="color:#0099ff;">(Click copy)</span></p>
-        <p class="color_red mt-15">{{$t('tip').bridgeMintTip.replace('\{\{account\}\}', address)}}</p>
+        <p class="color_red mt-15" v-if="depositObj.coinType !== 'mBTC'">{{$t('tip').bridgeMintTip.replace('\{\{account\}\}', address)}}</p>
       </div>
     </el-dialog>
     <!-- 充值 view end -->
@@ -260,7 +283,7 @@
           <li class="item flex-sc">
             <span class="label WW30">Value:</span>
             <div class="value flex-sc WW70">
-              <span> {{$$.fromWei(btc.mintValue, 'BTC')}} BTC </span>
+              <span> {{$$.fromWei(btc.mintValue, 8)}} BTC </span>
             </div>
           </li>
           <li class="item flex-sc">
@@ -268,7 +291,7 @@
             <div class="value flex-sc WW70">
               <span> {{
                 $store.state.swapCoin['mBTC'] ? 
-                $$.fromWei(Number(btc.mintValue) * Number($store.state.swapCoin['mBTC'].fee), 'BTC')
+                $$.fromWei(Number(btc.mintValue) * Number($store.state.swapCoin['mBTC'].fee), 8)
                 : ''
                 }} BTC </span>
             </div>
@@ -278,7 +301,7 @@
             <div class="value flex-sc WW70">
               <span> {{
                 $store.state.swapCoin['mBTC'] ? 
-                $$.fromWei(Number(btc.mintValue) * (1 - Number($store.state.swapCoin['mBTC'].fee), 'BTC'))
+                $$.fromWei(Number(btc.mintValue) * (1 - Number($store.state.swapCoin['mBTC'].fee), 8))
                 : ''
                 }} mBTC </span>
             </div>
@@ -397,6 +420,7 @@
 <script>
 import coinInfo from '@/config/coininfo.js'
 import {swapTokenContract} from './js/swapContract'
+import tokens from '@/config/tokens.js'
 export default {
   name: 'account',
   data () {
@@ -517,7 +541,6 @@ export default {
     init () {
       this.getHeader()
       this.initData()
-      this.getCrossChain()
       this.getBTCAddress()
       // console.log(this.$$.web3)
       // this.$$.web3.fsn.getAsset('0x2e80c6acd224d760a555d27c4538070179827b3d1fcc00436dfee0bc50789683', 'latest').then(res => {
@@ -555,6 +578,7 @@ export default {
           this.balanceData.push({ id: obj, balance: res[obj] })
         }
       }
+      console.log(this.balanceData)
       this.balanceData.unshift(fsnObj)
       this.fsnBalance = this.$$.web3.utils.fromWei(fsnObj.balance, 'ether')
     },
@@ -593,7 +617,7 @@ export default {
           })
         }
         this.balanceData = bArr
-        // console.log(this.balanceData)
+        console.log(this.balanceData)
         let tArr = []
         for (let obj of this.timelockData) {
           tArr.push({
@@ -602,10 +626,7 @@ export default {
           })
         }
         this.timelockData = tArr
-        this.refresh.table = false
-        this.$nextTick(() => {
-          this.refresh.table = true
-        })
+        this.getCrossChain()
         // console.log(this.timelockData)
       })
     },
@@ -613,10 +634,18 @@ export default {
       this.getSwapInfo().then(res => {
         this.swapTable = []
         for (let obj in res) {
-          this.swapTable.push({
-            ...res[obj]
-          })
+          if (obj === 'ANY') {
+            this.balanceData.splice(1, 0, res[obj])
+          } else {
+            this.swapTable.push({
+              ...res[obj]
+            })
+          }
         }
+        this.refresh.table = false
+        this.$nextTick(() => {
+          this.refresh.table = true
+        })
         console.log(res)
       })
     },

@@ -425,6 +425,7 @@ export default {
         this.maxFee = this.$$.web3.utils.fromWei(this.maxFee.toString(), 'ether')
         res.chainId = this.chainId
         res.from = this.address
+        // res.nonce = this.$$.web3.utils.toHex(230)
         console.log(res)
         this.dataPage = res
         // this.dataPage.gasLimit = res.gas

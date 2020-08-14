@@ -109,15 +109,16 @@ export default {
   data () {
     return {
       networkOPtion: [
-        {name: 'Mainnet', url: 'https://mainnet.anyswap.exchange'},
-        {name: 'Testnet', url: 'https://testnet.fsn.dev/api'},
+        {name: 'Mainnet', url: this.$$.MAINNET},
+        {name: 'Testnet', url: this.$$.TESTNET},
         {name: 'Custom', url: ''},
       ],
       newsActive: '',
       network: {
-        id: localStorage.getItem('networkID') ? Number(localStorage.getItem('networkID')) : 0,
-        url: localStorage.getItem('network') ? localStorage.getItem('network') : this.$$.serverURL,
-        chainID: localStorage.getItem('chainID') ? localStorage.getItem('chainID') : '32659',
+        // id: localStorage.getItem('networkID') ? Number(localStorage.getItem('networkID')) : 0,
+        id: localStorage.getItem('chainID') === this.$$.CHAINID_TEST ? 1 : 0,
+        url: localStorage.getItem('chainID') === this.$$.CHAINID_TEST ? this.$$.TESTNET : this.$$.MAINNET,
+        chainID: localStorage.getItem('chainID') === this.$$.CHAINID_TEST ? this.$$.CHAINID_TEST : this.$$.CHAINID_MAIN,
       },
       isReload: true,
       eDialog: {
@@ -156,9 +157,9 @@ export default {
         this.eDialog.custom = true
       } else {
         this.network.url = this.networkOPtion[this.network.id].url
-        let chainID = '32659'
-        if ( this.network.url === 'https://testnet.fsn.dev/api') {
-          chainID = '46688'
+        let chainID = this.$$.CHAINID_MAIN
+        if ( this.network.url === this.$$.TESTNET) {
+          chainID = this.$$.CHAINID_TEST
         }
         this.network.chainID = chainID
         this.setNetWork()

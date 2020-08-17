@@ -16,6 +16,9 @@
           <!-- <li class="item flex-c" :class="newsActive === 'test' ? 'active' : ''" @click="openUrl('/test')">
             Test
           </li> -->
+          <li class="item flex-c" :class="newsActive === 'pools' ? 'active' : ''" @click="toUrl('/pools')">
+            Pools
+          </li>
         </ul>
       </div>
       <div class="flex-ec">
@@ -184,6 +187,8 @@ export default {
         this.newsActive = 'account'
       } else if (cur.path.indexOf('test') !== -1) {
         this.newsActive = 'test'
+      } else if (cur.path.indexOf('pools') !== -1) {
+        this.newsActive = 'pools'
       } else {
         this.newsActive = 0
       }

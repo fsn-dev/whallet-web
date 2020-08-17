@@ -64,7 +64,8 @@ export default {
 		PASTE_PRIVATE_KEY: "私钥",
 		CREATE_NEW_WALLET: "创建新钱包",
 		SAVE_LEYSTORE_FILE: "保存你的 <span>密钥存储库</span> 文件.",
-		custom: '自定义网络'
+		custom: '自定义网络',
+		sendSure: '发送确认'
 	},
 	label: {
 		null: '无',

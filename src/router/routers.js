@@ -80,4 +80,14 @@ export default [
       }
     ]
   },
+  {
+    path: '/pools',
+    component: Main,
+    children: [
+      {
+        path: '/',
+        component: resolve => require.ensure([], () => resolve(require('@/pages/pools/index.vue')) ),
+      }
+    ]
+  },
 ]

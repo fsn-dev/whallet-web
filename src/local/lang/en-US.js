@@ -63,7 +63,8 @@ export default {
 		PASTE_PRIVATE_KEY: "Paste Your Private Key",
 		CREATE_NEW_WALLET: "Create New Wallet",
 		SAVE_LEYSTORE_FILE: "Save your <span>Keystore</span> File.",
-		custom: 'Custom Network'
+		custom: 'Custom Network',
+		sendSure: 'Send confirmation'
 	},
 	label: {
 		null: 'Null',

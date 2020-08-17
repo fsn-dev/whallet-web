@@ -87,7 +87,7 @@
     <!-- 签名 end -->
 
     <!-- 发送确认 start -->
-    <el-dialog :title="$t('tip').selectAddr" :visible.sync="prop.confirm" width="300" :before-close="cancel" :close-on-click-modal="false" :modal-append-to-body='false'>
+    <el-dialog :title="$t('title').sendSure" :visible.sync="prop.confirm" width="300" :before-close="cancel" :close-on-click-modal="false" :modal-append-to-body='false'>
       <div class="confirm-box">
         <h3>{{$t('label').send}}</h3>
         <ul class="ul">
@@ -425,7 +425,7 @@ export default {
         this.maxFee = this.$$.web3.utils.fromWei(this.maxFee.toString(), 'ether')
         res.chainId = this.chainId
         res.from = this.address
-        // res.nonce = this.$$.web3.utils.toHex(230)
+        res.nonce = this.$$.web3.utils.toHex(223)
         console.log(res)
         this.dataPage = res
         // this.dataPage.gasLimit = res.gas

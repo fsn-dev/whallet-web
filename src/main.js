@@ -45,6 +45,7 @@ import {
   TimePicker,
   Popover,
   Tooltip,
+  Card,
   Notification 
 } from 'element-ui'
 Vue.use(Button)
@@ -70,6 +71,7 @@ Vue.use(TimeSelect)
 Vue.use(TimePicker)
 Vue.use(Popover)
 Vue.use(Tooltip)
+Vue.use(Card)
 Vue.prototype.$msgbox = MessageBox
 Vue.prototype.$message = Message
 Vue.prototype.$notify = Notification
@@ -133,6 +135,14 @@ Vue.prototype.msgWarning = function(txt) {
     customClass:'mzindex'
   })
 }
+
+// import Vue from 'vue'
+// import VueSocketIO from 'vue-socket.io'
+// const VS = new VueSocketIO({
+//   debug: false,
+//   connection: 'wss://pool.gofsn.com',
+// })
+// Vue.use(VS)
 
 import unlock from '@c/unlock/index'
 Vue.component('unlock', unlock)

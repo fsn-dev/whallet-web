@@ -33,7 +33,7 @@
     <!-- 签名 end -->
 
     <!-- 发送确认 start -->
-    <el-dialog :title="$t('tip').selectAddr" :visible.sync="prop.confirm" width="300" :before-close="cancel" :close-on-click-modal="false" :modal-append-to-body='false'>
+    <el-dialog :title="$t('title').sendSure" :visible.sync="prop.confirm" width="300" :before-close="cancel" :close-on-click-modal="false" :modal-append-to-body='false'>
       <div class="confirm-box">
         <h3>{{$t('label').send}}</h3>
         <ul class="ul">

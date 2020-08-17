@@ -188,6 +188,13 @@ export default {
     // console.log(balance)
     return balance
   },
+  BNToStr (num, dec = 18, displayDecimals = 8) {
+    dec = new BigNumber(10).pow(dec)
+    num = new BigNumber(num)
+    displayDecimals = Math.min(displayDecimals, dec)
+    num = num.div(dec).toFixed(displayDecimals).toString()
+    return Number(num)
+  },
   thousandBit (num, dec = 8) {
     if (!Number(num)) return '0.00'
     if (Number(num) < 0.00000001) return '<0.00000001'

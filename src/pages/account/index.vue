@@ -650,7 +650,7 @@ export default {
       })
     },
     getBTCAddress () {
-      if (this.chainId !== '46688') return
+      if (this.chainId !== this.$$.CHAINID_TEST) return
       this.registerAddress(this.$$.swapRPC, this.address).then(res => {
         // console.log(res)
         if (res.result) {
@@ -660,7 +660,7 @@ export default {
       })
     },
     getBTCtxnsAll () {
-      if (this.chainId !== '46688') return
+      if (this.chainId !== this.$$.CHAINID_TEST) return
       // let url = `https://sochain.com/api/v2/get_tx_unspent/BTC/${this.btc.address}` // 主网
       let url = `https://sochain.com/api/v2/get_tx_received/BTCTEST/${this.btc.address}` // 测试网
       this.btc.mintValue = 0

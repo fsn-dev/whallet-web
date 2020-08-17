@@ -12,7 +12,7 @@ export default {
   CHAINID_MAIN,
   TESTNET,
   MAINNET,
-  serverURL: localStorage.getItem('chainID') === '46688' ? TESTNET : MAINNET,
+  serverURL: localStorage.getItem('chainID') === CHAINID_TEST ? TESTNET : MAINNET,
   version: '0.1.0',
   appURL: 'https://whallet.net',
   swapRPC: 'https://testnet.smpcwallet.com/btc2fsn'

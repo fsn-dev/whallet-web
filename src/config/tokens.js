@@ -1,3 +1,11 @@
+const PREFIX = 'a'
+
+const USDT = PREFIX + 'USDT'
+const BTC = PREFIX + 'BTC'
+const ETH = PREFIX + 'ETH'
+const XRP = PREFIX + 'XRP'
+const LTC = PREFIX + 'LTC'
+
 export default {
   '32659': {
     '0x0c74199D22f732039e843366a236Ff4F61986B32': { // ANY
@@ -13,9 +21,35 @@ export default {
       ISREDEEM: 0,
       DEPOSIT_ADDRESS: ''
     },
-    'mBTC': { // mBTC
+    '0xc7c64ac6d46be3d6ea318ec6276bb55291f8e496': { // mUSDT
+      NAME: 'Tether',
+      SYMBOL: USDT,
+      DECIMALS: 6,
+      MAXNUM: 1000000,
+      MINNUM: 0.1,
+      FEE: 0.001,
+      EXCHANGE_ADDRESS: '0x78917333bec47cee1022b31a136d31feff90d6fb',
+      ISSWITCH: 1,
+      ISDEPOSIT: 1,
+      ISREDEEM: 1,
+      DEPOSIT_ADDRESS: '0x94e840798e333cB1974E086B58c10C374E966bc7'
+    },
+    '0x5e12290c7e7eda58d092632a53bbbc717996c732': { // mETH
+      NAME: 'Ethereum',
+      SYMBOL: ETH,
+      DECIMALS: 18,
+      MAXNUM: 100,
+      MINNUM: 0.00001,
+      FEE: 0.001,
+      EXCHANGE_ADDRESS: '0x9ced18b0f8d7602f50d0061e6487021ec8114a1d',
+      ISSWITCH: 1,
+      ISDEPOSIT: 1,
+      ISREDEEM: 1,
+      DEPOSIT_ADDRESS: '0xCc6140a667980fbA8bF650b4aEC4f6e7Aff3a37F'
+    },
+    [BTC]: { // mBTC
       NAME: 'SMPC Bitcoin',
-      SYMBOL: 'mBTC',
+      SYMBOL: BTC,
       DECIMALS: 8,
       MAXNUM: 100,
       MINNUM: 0.00001,
@@ -26,53 +60,27 @@ export default {
       ISREDEEM: 0,
       DEPOSIT_ADDRESS: ''
     },
-    'mETH': { // mETH
-      NAME: 'Ethereum',
-      SYMBOL: 'mETH',
-      DECIMALS: 18,
-      MAXNUM: 100,
-      MINNUM: 0.00001,
-      FEE: 0.001,
-      EXCHANGE_ADDRESS: 'mETH',
-      ISSWITCH: 0,
-      ISDEPOSIT: 0,
-      ISREDEEM: 0,
-      DEPOSIT_ADDRESS: ''
-    },
-    'mUSDT': { // mUSDT
-      NAME: 'Tether',
-      SYMBOL: 'mUSDT',
-      DECIMALS: 6,
-      MAXNUM: 1000000,
-      MINNUM: 0.1,
-      FEE: 0.001,
-      EXCHANGE_ADDRESS: 'mUSDT',
-      ISSWITCH: 0,
-      ISDEPOSIT: 0,
-      ISREDEEM: 0,
-      DEPOSIT_ADDRESS: ''
-    },
-    'mXRP': { // mXRP
+    [XRP]: { // mXRP
       NAME: 'SMPC XRP',
-      SYMBOL: 'mXRP',
+      SYMBOL: XRP,
       DECIMALS: 6,
       MAXNUM: 1000000,
       MINNUM: 0.1,
       FEE: 0.001,
-      EXCHANGE_ADDRESS: 'mXRP',
+      EXCHANGE_ADDRESS: XRP,
       ISSWITCH: 0,
       ISDEPOSIT: 0,
       ISREDEEM: 0,
       DEPOSIT_ADDRESS: ''
     },
-    'mLTC': { // mUSDT
+    [LTC]: { // mUSDT
       NAME: 'SMPC Litecoin',
-      SYMBOL: 'mLTC',
+      SYMBOL: LTC,
       DECIMALS: 6,
       MAXNUM: 1000000,
       MINNUM: 0.1,
       FEE: 0.001,
-      EXCHANGE_ADDRESS: 'mLTC',
+      EXCHANGE_ADDRESS: LTC,
       ISSWITCH: 0,
       ISDEPOSIT: 0,
       ISREDEEM: 0,
@@ -93,9 +101,22 @@ export default {
       ISREDEEM: 0,
       DEPOSIT_ADDRESS: ''
     },
+    '0x19543338473caaa6f404dbe540bb787f389d5462': { // mUSDT
+      NAME: 'Tether',
+      SYMBOL: USDT,
+      DECIMALS: 6,
+      MAXNUM: 1000000,
+      MINNUM: 0.1,
+      FEE: 0.001,
+      EXCHANGE_ADDRESS: '0x763858d914ebc7936977ab7c93b7331cea77b37c',
+      ISSWITCH: 1,
+      ISDEPOSIT: 1,
+      ISREDEEM: 1,
+      DEPOSIT_ADDRESS: '0x053C71206957422E1932481B7454Eee3112AFe95'
+    },
     '0xeaeaeb2cf9921a084ef528f43e9e121e8291a947': { // mBTC
       NAME: 'SMPC Bitcoin',
-      SYMBOL: 'mBTC',
+      SYMBOL: BTC,
       DECIMALS: 8,
       MAXNUM: 100,
       MINNUM: 0.00001,
@@ -108,7 +129,7 @@ export default {
     },
     '0xeCd0fad9381b19feB74428Ab6a732BAA293CdC88': { // mETH
       NAME: 'Ethereum',
-      SYMBOL: 'mETH',
+      SYMBOL: ETH,
       DECIMALS: 18,
       MAXNUM: 100,
       MINNUM: 0.00001,
@@ -119,40 +140,27 @@ export default {
       ISREDEEM: 1,
       DEPOSIT_ADDRESS: '0xA79caC8B8ac2117C937B6c3ed3d888416F52d57e'
     },
-    '0x19543338473caaa6f404dbe540bb787f389d5462': { // mUSDT
-      NAME: 'Tether',
-      SYMBOL: 'mUSDT',
-      DECIMALS: 6,
-      MAXNUM: 1000000,
-      MINNUM: 0.1,
-      FEE: 0.001,
-      EXCHANGE_ADDRESS: '0x763858d914ebc7936977ab7c93b7331cea77b37c',
-      ISSWITCH: 1,
-      ISDEPOSIT: 1,
-      ISREDEEM: 1,
-      DEPOSIT_ADDRESS: '0x053C71206957422E1932481B7454Eee3112AFe95'
-    },
-    'mXRP': { // mXRP
+    XRP: { // mXRP
       NAME: 'SMPC XRP',
-      SYMBOL: 'mXRP',
+      SYMBOL: XRP,
       DECIMALS: 6,
       MAXNUM: 1000000,
       MINNUM: 0.1,
       FEE: 0.001,
-      EXCHANGE_ADDRESS: 'mXRP',
+      EXCHANGE_ADDRESS: XRP,
       ISSWITCH: 0,
       ISDEPOSIT: 0,
       ISREDEEM: 0,
       DEPOSIT_ADDRESS: ''
     },
-    'mLTC': { // mUSDT
+    LTC: { // mUSDT
       NAME: 'SMPC Litecoin',
-      SYMBOL: 'mLTC',
+      SYMBOL: LTC,
       DECIMALS: 6,
       MAXNUM: 1000000,
       MINNUM: 0.1,
       FEE: 0.001,
-      EXCHANGE_ADDRESS: 'mLTC',
+      EXCHANGE_ADDRESS: LTC,
       ISSWITCH: 0,
       ISDEPOSIT: 0,
       ISREDEEM: 0,

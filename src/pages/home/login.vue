@@ -136,6 +136,8 @@ import wallet from '@/assets/js/wallets/ethereum/wallet'
 import {getAddressArr as ledger} from '@/assets/js/wallets/ledger/index.js'
 import {getAddressArr as trezor} from '@/assets/js/wallets/trezor/index.js'
 // import HDPathArr from '@/config/HDPath.js'
+// import axios from 'axios'
+// const zlib = require('zlib')
 export default {
   name: 'login',
   data () {
@@ -162,28 +164,70 @@ export default {
       HDPathCustom: ''
     }
   },
-  // watch: {
-  //   networkUrl (nodeUrl) {
-  //     if ( nodeUrl === 'https://testnet.fsn.dev/api') {
-  //       this.HDPath = "m/44'/46688'/0'/0"
-  //     }
-  //     this.HDPath = localStorage.getItem('HDPath') ? localStorage.getItem('HDPath') : this.HDPath
-  //   }
-  // },
-  // computed: {
-  //   networkUrl () {
-  //     return this.$store.state.network
-  //   }
-  // },
   mounted () {
     this.HDPath = localStorage.getItem('HDPath') ? localStorage.getItem('HDPath') : this.HDPath
     if (location.protocol === 'https:' && navigator.userAgent.indexOf('Chrome') !== -1) {
       this.isShowTip = false
     }
     this.handTabClick()
-    // console.log(HDPathArr)
+
+//     this.$$.web3.setProvider('https://rinkeby.infura.io/v3/0e40cfd5e7a64b2d9aea8427e4bd52a0')
+//     this.$$.web3.eth.getBalance('0xE000E632124aa65B80f74E3e4cc06DC761610583').then(res => {
+//   console.log(res)
+// })
+//     console.log(this.$$.web3)
+    // this.tesst()
   },
   methods: {
+    // tesst () {
+      
+    //   const service = axios.create({
+    //     baseURL: 'http://localhost:8105', // api的base_url
+    //     timeout: 300000, // 请求超时时间
+    //     transformRequest: [
+    //       // 复用原有的转换，实现json --> json string
+    //       axios.defaults.transformRequest[0],
+    //       (data, header) => {
+    //         // 如果已处理过数据，则跳过
+    //         if (!header['Content-Encoding']) {
+    //           return data
+    //         }
+    //         // 如果数据长度1KB（如字符数据并不一定小于1KB），不压缩
+    //         if (data.length < 1024) {
+    //           return data
+    //         }
+    //         // 将数据压缩（可根据需要，只压缩长度大于多少的数据）
+    //         // 设置数据类型
+    //         header['Content-Encoding'] = 'gzip'
+    //         const w = zlib.createGzip()
+    //         w.end(Buffer.from(data))
+    //         return w
+    //       }
+    //     ]
+    //   })
+    //   service.get('/token').then(res => {
+    //     console.log(res)
+    //     zlib.unzip(res.data.data, (err, data) => {
+    //       console.log(err)
+    //       console.log(data)
+    //     })
+    //     // this.unzip(res.data)
+    //   })
+    // },
+    // unzip (key) {
+    //   let charData = key.split('').map(item => item.charCodeAt(0))
+    //   let array = pako.inflate(charData)
+    //   // 如果字符太大，会导致内存溢出报错，这里使用分片处理
+    //   var str = '';
+    //   var chunk = 8 * 1024
+    //   var i;
+    //   for (i = 0; i < array.length / chunk; i++) {
+    //     str += String.fromCharCode.apply(null, array.slice(i * chunk, (i + 1) * chunk));
+    //   }
+    //   str += String.fromCharCode.apply(null, array.slice(i * chunk));
+    //   // Base64.decode 解压必须也要使用相同的编译方式
+    //   return Base64.decode(str)
+    // },
     modalClick () {
       this.eDialog.addr = false
       this.page = 0
@@ -304,7 +348,7 @@ export default {
           this.fileData,
           this.password
         )
-        // console.log(this.walletInfo.getPrivateKeyString())
+        console.log(this.walletInfo.getPrivateKeyString())
         this.$store.commit("setKeystore", this.fileData)
         this.unlockWallet(this.walletInfo.getChecksumAddressString())
       } catch (e) {

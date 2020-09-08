@@ -11,7 +11,7 @@
           <h6 class="h6">mBTC BALANCE</h6>
           <p class="p"><span class="font18 mr-10">≈ {{$$.thousandBit(
             $$.fromWei(mBTCBalance, 8)
-          , 8)}}</span>mBTC</p>
+          , 8)}}</span>{{$$.prefix}}BTC</p>
         </li>
         <li class="item">
           <h6 class="h6">PUBLIC ADDRESS</h6>
@@ -142,8 +142,8 @@
                 <template slot-scope="scope">
                   <div class="flex-sc">
                     <div class="coin-logo">
-                      <img :src="getCoinInfo(scope.row.coinType.replace('m', '')).logo" v-if="getCoinInfo(scope.row.coinType.replace('m', ''))">
-                      <i class="null flex-c" v-else>{{scope.row.coinType ? scope.row.coinType.replace('m', '').substr(0,1) : '0x'}}</i>
+                      <img :src="getCoinInfo(scope.row.coinType.replace($$.prefix, '')).logo" v-if="getCoinInfo(scope.row.coinType.replace($$.prefix, ''))">
+                      <i class="null flex-c" v-else>{{scope.row.coinType ? scope.row.coinType.replace($$.prefix, '').substr(0,1) : '0x'}}</i>
                     </div>
                     <span>{{scope.row.coinType}}</span>
                   </div>
@@ -173,8 +173,9 @@
               </el-table-column>
               <el-table-column :label="$t('label').action" align="center" width="240">
                 <template slot-scope="scope">
-                  <el-button type="primary" size="mini" :disabled="!scope.row.ISSWITCH || !scope.row.ISDEPOSIT" @click="openDepositView(scope.row)">{{$t('btn').deposit}}</el-button>
-                  <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance) || !scope.row.ISSWITCH || !scope.row.ISREDEEM" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '0', coinType: scope.row.coinType, dec: scope.row.DECIMALS})">{{$t('btn').withdrawal}}</el-button>
+                  <!-- <el-button type="primary" size="mini" :disabled="!scope.row.ISSWITCH || !scope.row.ISDEPOSIT" @click="openDepositView(scope.row)">{{$t('btn').deposit}}</el-button>
+                  <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance) || !scope.row.ISSWITCH || !scope.row.ISREDEEM" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '0', coinType: scope.row.coinType, dec: scope.row.DECIMALS})">{{$t('btn').withdrawal}}</el-button> -->
+                  <el-button type="primary" size="mini" :disabled="!scope.row.ISSWITCH || !scope.row.ISDEPOSIT" @click="openUrl('https://anyswap.exchange/bridge')">{{$t('btn').withdrawal}}</el-button>
                   <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance) || !scope.row.ISSWITCH" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '1', coinType: scope.row.coinType, dec: scope.row.DECIMALS})">{{$t('btn').send}}</el-button>
                 </template>
               </el-table-column>
@@ -206,8 +207,8 @@
         <el-form>
           <el-form-item>
             <div class="flex-sc WW100">
-              <el-input type="number" v-model="depositVal" :placeholder="'0.00' + (depositObj.coinType ? depositObj.coinType.replace('m', '') : '')"></el-input>
-              <span v-if="depositVal" class="ml-10 W50 center">{{depositObj.coinType ? depositObj.coinType.replace('m', '') : ''}}</span>
+              <el-input type="number" v-model="depositVal" :placeholder="'0.00' + (depositObj.coinType ? depositObj.coinType.replace($$.prefix, '') : '')"></el-input>
+              <span v-if="depositVal" class="ml-10 W50 center">{{depositObj.coinType ? depositObj.coinType.replace($$.prefix, '') : ''}}</span>
             </div>
           </el-form-item>
           <el-form-item>
@@ -247,7 +248,7 @@
       <div>
         <div class="flex-c font22 mb-20">
           {{$t('btn').deposit}} 
-          {{depositVal ? depositVal : $$.fromWei(btc.mintValue, depositObj.DECIMALS)}} {{depositObj.coinType ? depositObj.coinType.replace('m', '') : ''}}</div>
+          {{depositVal ? depositVal : $$.fromWei(btc.mintValue, depositObj.DECIMALS)}} {{depositObj.coinType ? depositObj.coinType.replace($$.prefix, '') : ''}}</div>
         <div class="flex-c">
           <div id="BTCaddressQRcode"></div>
         </div>
@@ -488,7 +489,7 @@ export default {
     //   console.log(err)
     //   console.log(res)
     // })
-    // console.log(this.$$.web3)
+    // console.log(this.$$)
   },
   methods: {
     ...swapTokenContract,
@@ -499,6 +500,9 @@ export default {
       this.prop.depositInfo = false
       this.prop.depositData = false
       this.depositVal = ''
+    },
+    openUrl (url) {
+      window.open(url)
     },
     depositView () {
       if (!this.depositVal || Number(this.depositVal) === 0) {

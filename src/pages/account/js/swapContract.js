@@ -12,6 +12,7 @@ export const swapTokenContract = {
   },
   getSwapContractAPI (ContractAddress, swapInfo) {
     let address = this.$store.state.address
+    // console.log(swapInfo)
     return new Promise(resolve => {
       if (swapInfo.ISSWITCH) {
         let ABI = swapInfo.SYMBOL === 'mBTC' ? swapABI : swapETHABI
@@ -47,6 +48,8 @@ export const swapTokenContract = {
     for (let obj in coinList) {
       arr.push(this.getSwapContractAPI(obj, coinList[obj]))
     }
+    // console.log(chainID)
+    // console.log(coinList)
     return new Promise(resolve => {
       Promise.all(arr).then(res => {
         let coinObj = {}
@@ -54,8 +57,8 @@ export const swapTokenContract = {
           let obj = res[i]
           coinObj[obj.coinType] = res[i]
         }
+        // console.log(coinObj)
         resolve(coinObj)
-        resolve(res)
       })
     })
   },

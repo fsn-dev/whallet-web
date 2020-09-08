@@ -26,4 +26,5 @@ export default {
     else
       throw 'Keystore is error!'
   },
+  prefix: 'a'
 }

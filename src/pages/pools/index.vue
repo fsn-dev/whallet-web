@@ -190,7 +190,7 @@ export default {
 
     // console.log(VS)
     this.$socket.emit("getConfig")
-    console.log(this.$$.web3.utils.hexToUtf8('0x7b2274797065223a227769746864726177222c22616d6f756e74223a223078313633343537383564386130303030227d'))
+    // console.log(this.$$.web3.utils.hexToUtf8('0x7b2274797065223a227769746864726177222c22616d6f756e74223a223078313633343537383564386130303030227d'))
     this.getUserInfo()
     // VS.io.on("userInfo", (res) => {
     //   console.log(res)
@@ -206,7 +206,7 @@ export default {
       this.prop.pwd = false
     },
     getUserInfo () {
-      this.$socket.emit('getUserInfo', {address: "6215558"})
+      this.$socket.emit('getUserInfo', {address: this.address})
     },
     withdrawalFn () {
       let withdrawData = {

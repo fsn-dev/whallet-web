@@ -49,7 +49,8 @@ export default {
 		DOWNLOAD_KEYSTORE1: "密钥存储库 文件 (UTC / JSON · Recommended · Encrypted)",
 		UNDERSTAND_CONTINUE: "我明白了。继续下去",
 		viewQRcode: '地址二维码',
-		exit: '关闭钱包'
+		exit: '关闭钱包',
+		swap: '交易'
 	},
 	loading: {
 		l_1: '加载中……'

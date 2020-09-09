@@ -175,7 +175,7 @@
                 <template slot-scope="scope">
                   <!-- <el-button type="primary" size="mini" :disabled="!scope.row.ISSWITCH || !scope.row.ISDEPOSIT" @click="openDepositView(scope.row)">{{$t('btn').deposit}}</el-button>
                   <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance) || !scope.row.ISSWITCH || !scope.row.ISREDEEM" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '0', coinType: scope.row.coinType, dec: scope.row.DECIMALS})">{{$t('btn').withdrawal}}</el-button> -->
-                  <el-button type="primary" size="mini" :disabled="!scope.row.ISSWITCH || !scope.row.ISDEPOSIT" @click="openUrl('https://anyswap.exchange/bridge')">{{$t('btn').withdrawal}}</el-button>
+                  <el-button type="primary" size="mini" :disabled="!scope.row.ISSWITCH || !scope.row.ISDEPOSIT" @click="openUrl('https://anyswap.exchange/swap')">{{$t('btn').swap}}</el-button>
                   <el-button type="primary" size="mini" :disabled="!Number(scope.row.balance) || !scope.row.ISSWITCH" @click="toUrl('/swapSend', {id: scope.row.id, balance: scope.row.balance, type: '2', sendType: '1', coinType: scope.row.coinType, dec: scope.row.DECIMALS})">{{$t('btn').send}}</el-button>
                 </template>
               </el-table-column>

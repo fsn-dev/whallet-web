@@ -244,8 +244,10 @@ export default {
     handTabClick () {
       const trezor = "m/44'/60'/0'/0", ledger = "m/44'/60'/0'"
       this.HDPathArr = [
-        {name: "Ledger(ETH)(" + ledger + ")", path: ledger},
-        {name: "TREZOR(ETH)(" + trezor + ")", path: trezor}
+        // {name: "Ledger(ETH)(" + ledger + ")", path: ledger},
+        // {name: "TREZOR(ETH)(" + trezor + ")", path: trezor}
+        {name: "Legacy", path: ledger},
+        {name: "Ledger live", path: trezor}
       ]
       if (this.activeTabs === 'ledger') {
         this.HDPath = ledger

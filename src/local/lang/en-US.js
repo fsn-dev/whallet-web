@@ -48,7 +48,8 @@ export default {
 		DOWNLOAD_KEYSTORE1: "Keystore File (UTC / JSON · Recommended · Encrypted)",
 		UNDERSTAND_CONTINUE: "I understand. Continue.",
 		viewQRcode: 'Address QR code',
-		exit: 'Close Wallet'
+		exit: 'Close Wallet',
+		swap: 'Swap'
 	},
 	loading: {
 		l_1: 'Loading……'

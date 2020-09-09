@@ -16,9 +16,9 @@
           <!-- <li class="item flex-c" :class="newsActive === 'test' ? 'active' : ''" @click="openUrl('/test')">
             Test
           </li> -->
-          <li class="item flex-c" :class="newsActive === 'pools' ? 'active' : ''" @click="toUrl('/pools')">
+          <!-- <li class="item flex-c" :class="newsActive === 'pools' ? 'active' : ''" @click="toUrl('/pools')">
             Pools
-          </li>
+          </li> -->
         </ul>
       </div>
       <div class="flex-ec">

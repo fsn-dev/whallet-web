@@ -70,6 +70,7 @@
               </el-table-column>
               <el-table-column :label="$t('label').action" align="right">
                 <template slot-scope="scope">
+                  <el-button type="primary" size="mini" v-if="(scope.row.SYMBOL && scope.row.SYMBOL === 'ANY') || (scope.row.Symbol && scope.row.Symbol === 'FSN')" @click="openUrl('https://anyswap.exchange/swap')">{{$t('btn').swap}}</el-button>
                   <el-button
                     type="primary"
                     size="mini"

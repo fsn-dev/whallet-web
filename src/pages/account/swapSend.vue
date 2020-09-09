@@ -5,7 +5,7 @@
         <li class="item">
           <label class="label">
             {{$t('label').address}}:
-            <span class="font12 color_99 ml-10" style="font-weight:normal;">（{{!Number(urlParams.sendType) ? ((urlParams.coinType ? urlParams.coinType.replace('m', '') : urlParams.coinType) + ' Address') : 'FSN Address'}}）</span>
+            <span class="font12 color_99 ml-10" style="font-weight:normal;">（{{!Number(urlParams.sendType) ? ((urlParams.coinType ? urlParams.coinType.replace($$.prefix, '') : urlParams.coinType) + ' Address') : 'FSN Address'}}）</span>
           </label>
           <div class="input-box relative">
             <!-- <el-input type="text" v-model="formData.to" class=""></el-input> -->
@@ -198,11 +198,11 @@ export default {
         input: ''
       }
       let count = 0, time = Date.now()
-      let value = this.$$.toWei(this.formData.value, this.urlParams.coinType.replace('m', ''))
+      let value = this.$$.toWei(this.formData.value, this.urlParams.coinType.replace(this.$$.prefix, ''))
       // let value = this.formData.value
       if (Number(this.urlParams.sendType) === 0) {
         // console.log(this.urlParams.coinType)
-        if (this.urlParams.coinType === 'mBTC') {
+        if (this.urlParams.coinType === (this.$$.prefix + 'BTC')) {
           data.input = this.TokenContract.methods.Swapout(value, this.formData.address).encodeABI()
         } else {
           data.input = this.TokenContract.methods.Swapout(value).encodeABI()
@@ -216,7 +216,7 @@ export default {
       batch.add(this.$$.web3.eth.estimateGas.request({to: this.swapInfo.id, data: data.input}, (err, res) => {
         if (err) {
           console.log(err)
-          data.gas = this.$$.web3.utils.toHex(12600 * 100)
+          data.gas = this.$$.web3.utils.toHex(90000)
           count ++
         } else {
           data.gas = this.$$.web3.utils.toHex(res * 6)

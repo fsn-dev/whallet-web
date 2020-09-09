@@ -156,14 +156,14 @@ export default {
         this.msgWarning(this.$t('warn').w_3)
         return
       }
-      if (Number(this.swapInfo.MINNUM) > Number(this.formData.value)) {
-        this.msgError('Min value is:' + this.swapInfo.MINNUM)
-        return
-      }
-      if (Number(this.swapInfo.MAXNUM) < Number(this.formData.value)) {
-        this.msgError('Max value is:' + this.swapInfo.MAXNUM)
-        return
-      }
+      // if (Number(this.swapInfo.MINNUM) > Number(this.formData.value)) {
+      //   this.msgError('Min value is:' + this.swapInfo.MINNUM)
+      //   return
+      // }
+      // if (Number(this.swapInfo.MAXNUM) < Number(this.formData.value)) {
+      //   this.msgError('Max value is:' + this.swapInfo.MAXNUM)
+      //   return
+      // }
       if (Number(this.formData.value) > Number(this.balance)) {
         this.msgError(this.$t('warn').w_11)
         return

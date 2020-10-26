@@ -3,6 +3,8 @@ const PREFIX = 'a'
 const USDT = PREFIX + 'USDT'
 const BTC = PREFIX + 'BTC'
 const ETH = PREFIX + 'ETH'
+const UNI = PREFIX + 'UNI'
+const FUSE = 'FUSE'
 const XRP = PREFIX + 'XRP'
 const LTC = PREFIX + 'LTC'
 
@@ -20,6 +22,19 @@ export default {
       ISDEPOSIT: 0,
       ISREDEEM: 0,
       DEPOSIT_ADDRESS: ''
+    },
+    '0x445166c4854836292a5af7e3f165a3b8b4eedf97': { // mBTC
+      NAME: 'SMPC Bitcoin',
+      SYMBOL: BTC,
+      DECIMALS: 8,
+      MAXNUM: 0.01,
+      MINNUM: 0.001,
+      FEE: 0.001,
+      EXCHANGE_ADDRESS: '0x361450E73d63031feBE35Ca9fD772F3FD53E1013',
+      ISSWITCH: 1,
+      ISDEPOSIT: 1,
+      ISREDEEM: 1,
+      DEPOSIT_ADDRESS: '1HvrEMgxsYadWGhijpfygKSqPZ5p418g45'
     },
     '0xc7c64ac6d46be3d6ea318ec6276bb55291f8e496': { // mUSDT
       NAME: 'Tether',
@@ -47,17 +62,30 @@ export default {
       ISREDEEM: 1,
       DEPOSIT_ADDRESS: '0xCc6140a667980fbA8bF650b4aEC4f6e7Aff3a37F'
     },
-    [BTC]: { // mBTC
-      NAME: 'SMPC Bitcoin',
-      SYMBOL: BTC,
-      DECIMALS: 8,
-      MAXNUM: 100,
-      MINNUM: 0.00001,
+    '0x6780bc1357dc0b6aa39224f53dc8aeceb093b6ff': { // UNI
+      NAME: 'ANY Uniswap',
+      SYMBOL: UNI,
+      DECIMALS: 18,
+      MAXNUM: 100000,
+      MINNUM: 10,
       FEE: 0.001,
-      EXCHANGE_ADDRESS: 'mBTC',
-      ISSWITCH: 0,
-      ISDEPOSIT: 0,
-      ISREDEEM: 0,
+      EXCHANGE_ADDRESS: '0x2F8cC99f9dea45306ec91612c67c2de36b825f9A',
+      ISSWITCH: 1,
+      ISDEPOSIT: 1,
+      ISREDEEM: 1,
+      DEPOSIT_ADDRESS: '0x94e840798e333cB1974E086B58c10C374E966bc7'
+    },
+    '0x20dd2f2bfa4ce3eaec5f57629583dad8a325872a': { // FUSE
+      NAME: 'Fusionite',
+      SYMBOL: FUSE,
+      DECIMALS: 18,
+      MAXNUM: 100000,
+      MINNUM: 10,
+      FEE: 0.001,
+      EXCHANGE_ADDRESS: '0xe96aC326eceA1a09aE6E47487c5D8717f73d5A7e',
+      ISSWITCH: 1,
+      ISDEPOSIT: 1,
+      ISREDEEM: 1,
       DEPOSIT_ADDRESS: ''
     },
     [XRP]: { // mXRP

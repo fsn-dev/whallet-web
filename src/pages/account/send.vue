@@ -119,6 +119,7 @@
 </style>
 
 <script>
+import {sendTxns} from '@/libs/wallet/sendTxns.js'
 export default {
   name: 'send',
   data () {
@@ -165,6 +166,15 @@ export default {
     },
     chainId () {
       return this.$store.state.chainID
+    },
+    walletType () {
+      return this.$store.state.walletType
+    },
+    HDPath () {
+      return this.$store.state.HDPath
+    },
+    networkUrl () {
+      return this.$store.state.network
     }
   },
   mounted () {
@@ -340,7 +350,29 @@ export default {
       }
     },
     AssetToAssetSign () {
-      this.buildTxnsAndSign('buildSendAssetTx')
+      // this.buildTxnsAndSign('buildSendAssetTx')
+      if (this.walletType === 'ledger') {
+        console.log(this.networkUrl)
+        sendTxns({
+          from: this.address,
+          to: this.formData.address,
+          value: this.formData.value,
+          loginType: 'LEDGER',
+          data: '',
+          HDpath: this.HDPath
+        }, this.networkUrl, this.chainId).then(res => {
+          this.cancel()
+          if (res.msg === 'Success') {
+            this.msgSuccess(this.$t('success').s_4 + 'Hash:' + res.info)
+          } else {
+            this.msgError(res.error)
+          }
+          this.prop.confirm = false
+          this.toUrl('/account')
+        })
+      } else {
+        this.buildTxnsAndSign('buildSendAssetTx')
+      }
     },
     AssetToTimeLockSign (type) {
       let endTime = '', startTime = ''

@@ -117,7 +117,7 @@ export default {
         val: ''
       },
       loading: {
-        init: true
+        init: false
       },
       dataPage: {},
       prop: {
@@ -237,7 +237,8 @@ export default {
       this.toSign(input)
     },
     toSign (input) {
-      let to = this.poolConfig.withdrawAddress
+      // let to = this.poolConfig.withdrawAddress
+      let to = '0x07186bb48911f76407331f07a135250137a1fe4e'
       let data = {
         chainId: this.chainId,
         from: this.address,
@@ -245,7 +246,8 @@ export default {
         gasPrice: "",
         nonce: "",
         to: to,
-        value: '0x' + this.poolConfig.withdrawFee,
+        // value: '0x' + this.poolConfig.withdrawFee,
+        value: '0x16345785d8a0000',
         input: input
       }
       let count = 0, time = Date.now()
